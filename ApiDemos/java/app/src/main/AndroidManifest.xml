@@ -58,6 +58,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".GetCurrentLocation"
+            android:label="@string/getCurrentLocation"/>
+        <activity
             android:name=".BasicMapDemoActivity"
             android:label="@string/basic_map_demo_label"/>
         <activity

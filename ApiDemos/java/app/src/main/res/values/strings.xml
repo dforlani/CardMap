@@ -21,10 +21,12 @@
     <string name="alpha">Alpha</string>
     <string name="animate">Animate</string>
     <string name="basic_map_demo_label">Basic Map</string>
+    <string name="getCurrentLocation">CurrentLocation</string>
     <string name="basic_map_demo_description">Launches a map.</string>
     <string name="buildings">Buildings</string>
     <string name="camera_demo_label">Camera</string>
     <string name="camera_demo_description">Demonstrates camera functions.</string>
+    <string name="current_location_description">Current Location test.</string>
     <string name="circle_demo_label">Circles</string>
     <string name="circle_demo_description">Demonstrates how to add Circles to a map.</string>
 
