@@ -26,6 +26,9 @@ public final class DemoDetailsList {
     }
 
     public static final DemoDetails[] DEMOS = {
+            new DemoDetails(R.string.cameraTest,
+                    R.string.camera_label,
+                    CameraActivity.class),
             new DemoDetails(R.string.getCurrentLocation,
                     R.string.current_location_description,
                     GetCurrentLocation.class),
