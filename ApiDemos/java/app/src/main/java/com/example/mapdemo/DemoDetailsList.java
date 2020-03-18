@@ -16,6 +16,8 @@
 
 package com.example.mapdemo;
 
+import com.example.mapdemo.activity.NovaLocalizacaoActivity;
+
 /**
  * A list of all the demos we have available.
  */
@@ -26,6 +28,9 @@ public final class DemoDetailsList {
     }
 
     public static final DemoDetails[] DEMOS = {
+            new DemoDetails(R.string.nova_localizacao,
+                    R.string.nova_localizacao_label,
+                    NovaLocalizacaoActivity.class),
             new DemoDetails(R.string.cameraTest,
                     R.string.camera_label,
                     CameraActivity.class),

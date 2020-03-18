@@ -78,6 +78,9 @@
             android:name=".CircleDemoActivity"
             android:label="@string/circle_demo_label"/>
         <activity
+            android:name=".activity.NovaLocalizacaoActivity"
+            android:label="@string/nova_localizacao_label"/>
+        <activity
             android:name=".EventsDemoActivity"
             android:label="@string/events_demo_label"/>
         <activity
