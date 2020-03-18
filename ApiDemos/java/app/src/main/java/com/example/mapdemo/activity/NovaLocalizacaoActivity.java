@@ -24,6 +24,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mapdemo.R;
+import com.example.mapdemo.database.DatabaseHelperLocalizacao;
+import com.example.mapdemo.model.Localizacao;
+//import com.example.mapdemo.database.DatabaseHelperExemploKotlin;
+//import com.example.mapdemo.model.Localizacao;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,7 +80,7 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
                     " see the changes in coordinates."+"\nWait..");
 
             pb.setVisibility(View.VISIBLE);
-            locationListener = new MyLocationListener();
+            locationListener = new MyLocationListener(this);
 
             locationMangaer.requestLocationUpdates(LocationManager
                     .GPS_PROVIDER, 5000, 10,locationListener);
@@ -132,6 +136,12 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
 
     /*----------Listener class to get coordinates ------------- */
     private class MyLocationListener implements LocationListener {
+        Context context;
+
+        public MyLocationListener(Context context){
+            this.context = context;
+        }
+
         @Override
         public void onLocationChanged(Location loc) {
 
@@ -162,6 +172,14 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
 
             String s = longitude+"\n"+latitude +
                     "\n\nMy Currrent City is: "+cityName;
+
+
+            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude());
+            DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(context);
+            database.add(locDB);
+
+
+
             editLocation.setText(s);
         }
 

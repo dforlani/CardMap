@@ -22,9 +22,13 @@
     <string name="animate">Animate</string>
     <string name="camera_label">Basic Camera</string>
     <string name="nova_localizacao_label">Insira uma nova localização</string>
+    <string name="localizacoes_mapa_label">Visualizar localizações no mapa</string>
+
 
     <string name="basic_map_demo_label">Basic Map</string>
-    <string name="nova_localizacao">Nova Localização</string>
+    <string name="nova_localizacao">Nova Localização pra Pós</string>
+    <string name="localizacoes_mapa">Localizações no Mapa pra Pós</string>
+
     <string name="getCurrentLocation">CurrentLocation</string>
     <string name="cameraTest">Camera</string>
     <string name="photo">Foto</string>

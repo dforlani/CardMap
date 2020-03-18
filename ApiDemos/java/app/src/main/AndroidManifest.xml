@@ -81,6 +81,9 @@
             android:name=".activity.NovaLocalizacaoActivity"
             android:label="@string/nova_localizacao_label"/>
         <activity
+            android:name=".activity.LocalizacoesMapaActivity"
+            android:label="@string/localizacoes_mapa_label"/>
+        <activity
             android:name=".EventsDemoActivity"
             android:label="@string/events_demo_label"/>
         <activity

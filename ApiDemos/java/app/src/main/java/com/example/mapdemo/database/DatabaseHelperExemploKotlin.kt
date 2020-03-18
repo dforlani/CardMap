@@ -7,21 +7,19 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.mapdemo.model.Localizacao
 import io.github.cerveme.crud_kotlin.model.Configuracao
-import java.util.*
 
 
-
-class DatabaseHelperConfiguracao(context: Context,
-                                 factory: SQLiteDatabase.CursorFactory?) :
+class DatabaseHelperExemploKotlin(context: Context,
+                                  factory: SQLiteDatabase.CursorFactory?) :
         SQLiteOpenHelper(context, DATABASE_NAME,
                 factory, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         val CREATE_TABLE = ("CREATE TABLE " +
                 TABLE_NAME + "("
-                + COLUMN_ID + " INT PRIMARY KEY AUTO_INCREMENT," +
-                COLUMN_LATITUDE + " TEXT," +
-                COLUMN_LONGITUDE + " TEXT,"
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_LATITUDE + " DOUBLE," +
+                COLUMN_LONGITUDE + " DOUBLE,"
                 + ")")
         db.execSQL(CREATE_TABLE)
     }
@@ -58,7 +56,7 @@ class DatabaseHelperConfiguracao(context: Context,
 //        if(cursor!!.count > 0) {
 //            cursor!!.moveToFirst()
 //            do {
-//                return cursor.getString(cursor.getColumnIndex(DatabaseHelperConfiguracao.COLUMN_NAME))
+//                return cursor.getString(cursor.getColumnIndex(DatabaseHelperExemploKotlin.COLUMN_NAME))
 //            } while (cursor.moveToNext())
 //        }else{
 //
