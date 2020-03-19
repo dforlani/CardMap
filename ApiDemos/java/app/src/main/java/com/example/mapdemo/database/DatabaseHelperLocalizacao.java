@@ -19,13 +19,15 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
 // If you change the database schema, you must increment the database version.
-     static final int DATABASE_VERSION = 3;
+     static final int DATABASE_VERSION = 5;
      static final String DATABASE_NAME =  "localizacao.db";
     String TABLE_NAME = "localizacao";
     String COLUMN_ID = "id_localizacao";
     public static String COLUMN_LATITUDE = "latitude";
     public static String COLUMN_LONGITUDE = "longitude";
     public static String COLUMN_FOTO= "foto";
+    public static String COLUMN_NOME= "nome";
+    public static String COLUMN_TELEFONE= "telefone";
 
 
      public DatabaseHelperLocalizacao(Context context) {
@@ -49,7 +51,9 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_LATITUDE + " TEXT," +
             COLUMN_LONGITUDE + " TEXT,"+
-        COLUMN_FOTO + " BLOB"
+        COLUMN_FOTO + " BLOB,"+
+        COLUMN_NOME + " TEXT,"+
+                COLUMN_TELEFONE + " TEXT"
             + ")";
 
 
@@ -82,7 +86,9 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
             do{
                 aux = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)),
                         locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)),
-                        getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO)))
+                        getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO))),
+                        locs.getString(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_NOME)),
+                        locs.getString(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_TELEFONE))
                 );
                 localizacoes.add(aux);
             }while(locs.moveToNext());
@@ -107,6 +113,8 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
                 values.put(COLUMN_LATITUDE, loc.latitude);
                 values.put(COLUMN_LONGITUDE, loc.longitude);
                 values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
+                values.put(COLUMN_NOME, loc.nome);
+                values.put(COLUMN_TELEFONE, loc.telefone);
 
                 // Notice how we haven't specified the primary key. SQLite auto increments the primary key column.
                 db.insertOrThrow(TABLE_NAME, null, values);

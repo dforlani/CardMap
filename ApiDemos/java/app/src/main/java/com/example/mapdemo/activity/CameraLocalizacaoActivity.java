@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -40,28 +41,60 @@ import java.util.List;
 import java.util.Locale;
 
 public class CameraLocalizacaoActivity extends AppCompatActivity
-        implements OnClickListener {
+        implements OnClickListener, LocationListener {
 
     private LocationManager locationMangaer=null;
     private LocationListener locationListener=null;
+    private LocationManager mLocationManager;
 
     private Button btnGetLocation = null;
-    private EditText editLocation = null;
+   // private EditText editLocation = null;
     private ProgressBar pb =null;
 
     private static final String TAG = "Debug";
     private Boolean flag = false;
+    private boolean isGpsEnabled = false;
+    private boolean isNetworkEnabled = false;
+    private boolean canGetLocation = false;
+    /**
+     * location
+     */
+    private Location mLocation;
 
+    /**
+     * latitude
+     */
+    private double mLatitude;
+
+    /**
+     * longitude
+     */
+    private double mLongitude;
+
+    /**
+     * min distance change to get location update
+     */
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATE = 10;
+
+    /**
+     * min time for location update
+     * 60000 = 1min
+     */
+    private static final long MIN_TIME_FOR_UPDATE = 60000;
     //variáveis da câmera
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private Bitmap photo;
+    private EditText editTextNome = null;
+    private EditText editTextTelefone = null;
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nova_localizacao_com_foto);
+        this.mContext = this;
 
 
         //if you want to lock screen for always Portrait mode
@@ -71,13 +104,18 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
 
-        editLocation = (EditText) findViewById(R.id.editTextLocation);
+//        editLocation = (EditText) findViewById(R.id.editTextLocation);
 
         btnGetLocation = (Button) findViewById(R.id.btnLocation);
+        editTextNome = (EditText) findViewById(R.id.editTextNome);
+        editTextTelefone = (EditText) findViewById(R.id.editTextTelefone);
         btnGetLocation.setOnClickListener(this);
+
 
         locationMangaer = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
+
+
 
         //constroi o layout da câmera
         this.imageView = (ImageView)this.findViewById(R.id.imageView1);
@@ -101,6 +139,31 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
 
     }
 
+    public void onProviderDisabled(String provider) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void onProviderEnabled(String provider) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+
+    }
+
+//    @Override
+//    public IBinder onBind(Intent arg0) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+    public void onLocationChanged(Location location) {
+        // TODO Auto-generated method stub
+
+    }
     @Override
     public void onClick(View v) {
         flag = displayGpsStatus();
@@ -108,19 +171,153 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
 
             Log.v(TAG, "onClick");
 
-            editLocation.setText("Please!! move your device to"+
-                    " see the changes in coordinates."+"\nWait..");
+//            editLocation.setText("Please!! move your device to"+
+          //          " see the changes in coordinates."+"\nWait..");
 
             pb.setVisibility(View.VISIBLE);
-            locationListener = new MyLocationListener(this);
+            //locationListener = new MyLocationListener(this);
 
-            locationMangaer.requestLocationUpdates(LocationManager
-                    .GPS_PROVIDER, 5000, 10,locationListener);
+           // locationMangaer.requestLocationUpdates(LocationManager
+             //       .GPS_PROVIDER, 5000, 10,locationListener);
+            pb.setVisibility(View.INVISIBLE);
+           // Toast.makeText(getBaseContext(),"Location changed : Lat: " +
+             //               loc.getLatitude()+ " Lng: " + loc.getLongitude(),
+             //       Toast.LENGTH_SHORT).show();
+
+
+            /**
+             * Set GPS Location fetched address
+             */
+            getLocation();
+
+
+            //Location loc = getLocation();
+            String longitude = "Longitude: " +this.getLongitude();
+            Log.v(TAG, longitude);
+            String latitude = "Latitude: " +this.getLatitude();
+            Log.v(TAG, latitude);
+
+            /*----------to get City-Name from coordinates ------------- */
+
+
+
+            Localizacao locDB = new Localizacao(this.getLatitude(),
+                    this.getLongitude(),
+                    photo,
+                    editTextNome.getText().toString(),
+                    editTextTelefone.getText().toString());
+            DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
+            database.add(locDB);
 
         } else {
             alertbox("Gps Status!!", "Your GPS is: OFF");
         }
 
+    }
+
+    /**
+     * @return latitude
+     *         <p/>
+     *         function to get latitude
+     */
+    public double getLatitude() {
+
+        if (mLocation != null) {
+
+            mLatitude = mLocation.getLatitude();
+        }
+        return mLatitude;
+    }
+
+    /**
+     * @return longitude
+     *         function to get longitude
+     */
+    public double getLongitude() {
+
+        if (mLocation != null) {
+
+            mLongitude = mLocation.getLongitude();
+
+        }
+
+        return mLongitude;
+    }
+
+    /**
+     * @return location
+     */
+    public Location getLocation() {
+
+        try {
+
+            mLocationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
+
+            /*getting status of the gps*/
+            isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            /*getting status of network provider*/
+            isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGpsEnabled && !isNetworkEnabled) {
+
+                /*no location provider enabled*/
+            } else {
+
+                this.canGetLocation = true;
+
+                /*getting location from network provider*/
+                if (isNetworkEnabled) {
+
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
+
+                    if (mLocationManager != null) {
+
+                        mLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        if (mLocation != null) {
+
+                            mLatitude = mLocation.getLatitude();
+
+                            mLongitude = mLocation.getLongitude();
+                        }
+                    }
+                    /*if gps is enabled then get location using gps*/
+                    if (isGpsEnabled) {
+
+                        if (mLocation == null) {
+
+                            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
+
+                            if (mLocationManager != null) {
+
+                                mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                                if (mLocation != null) {
+
+                                    mLatitude = mLocation.getLatitude();
+
+                                    mLongitude = mLocation.getLongitude();
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return mLocation;
+    }
+
+    public boolean canGetLocation() {
+
+        return this.canGetLocation;
     }
 
     /*----Method to Check GPS is enable or disable ----- */
@@ -166,6 +363,27 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
         alert.show();
     }
 
+    private Location getLastBestLocation() {
+        Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNet = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        long GPSLocationTime = 0;
+        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+
+        long NetLocationTime = 0;
+
+        if (null != locationNet) {
+            NetLocationTime = locationNet.getTime();
+        }
+
+        if ( 0 < GPSLocationTime - NetLocationTime ) {
+            return locationGPS;
+        }
+        else {
+            return locationNet;
+        }
+    }
+
     /*----------Listener class to get coordinates ------------- */
     private class MyLocationListener implements LocationListener {
         Context context;
@@ -174,10 +392,12 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
             this.context = context;
         }
 
+
+
         @Override
         public void onLocationChanged(Location loc) {
 
-            editLocation.setText("");
+//            editLocation.setText("");
             pb.setVisibility(View.INVISIBLE);
             Toast.makeText(getBaseContext(),"Location changed : Lat: " +
                             loc.getLatitude()+ " Lng: " + loc.getLongitude(),
@@ -206,13 +426,18 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
                     "\n\nMy Currrent City is: "+cityName;
 
 
-            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude(), photo);
+            Localizacao locDB = new Localizacao(loc.getLatitude(),
+                    loc.getLongitude(),
+                    photo,
+                    editTextNome.getText().toString(),
+                    editTextTelefone.getText().toString());
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(context);
             database.add(locDB);
+            Toast.makeText(null, "Contato salvo com sucesso", Toast.LENGTH_LONG).show();
 
 
 
-            editLocation.setText(s);
+//            editLocation.setText(s);
         }
 
         @Override

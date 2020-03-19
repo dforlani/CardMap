@@ -5,21 +5,63 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:weightSum="1">
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Get Current Location and City Name"
-        android:layout_weight="0.20"
-        android:gravity="center"
-        android:textSize="20sp" />
-    <EditText
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.33"
-        android:id="@+id/editTextLocation"
-        android:editable="false">
-        <requestFocus></requestFocus>
-    </EditText>
+        android:gravity="center"
+        >
+        <ImageView android:id="@+id/imageView1"
+            android:layout_height="150sp"
+            android:layout_width="150sp">
+        </ImageView>
+        <Button android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/photo">
+        </Button>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome: " />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextNome"
+            >
+        </EditText>
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Telefone: " />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextTelefone"
+                >
+            </EditText>
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/layButtonH"
         android:layout_height="wrap_content"
@@ -29,7 +71,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Get Location"
+            android:text="Salvar"
             android:id="@+id/btnLocation"></Button>
     </LinearLayout>
     <LinearLayout
@@ -45,13 +87,5 @@
 
         </ProgressBar>
     </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <Button android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/photo"></Button>
-        <ImageView android:id="@+id/imageView1" android:layout_height="wrap_content" android:src="@drawable/chevron" android:layout_width="wrap_content"></ImageView>
 
-    </LinearLayout>
 </LinearLayout>

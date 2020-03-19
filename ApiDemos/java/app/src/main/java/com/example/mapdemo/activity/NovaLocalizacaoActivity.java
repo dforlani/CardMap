@@ -76,14 +76,14 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
 
             Log.v(TAG, "onClick");
 
-            editLocation.setText("Please!! move your device to"+
-                    " see the changes in coordinates."+"\nWait..");
+          //  editLocation.setText("Please!! move your device to"+
+            //        " see the changes in coordinates."+"\nWait..");
 
             pb.setVisibility(View.VISIBLE);
-            locationListener = new MyLocationListener(this);
+           // locationListener = new MyLocationListener(this);
 
-            locationMangaer.requestLocationUpdates(LocationManager
-                    .GPS_PROVIDER, 5000, 10,locationListener);
+           // locationMangaer.requestLocationUpdates(LocationManager
+            //        .GPS_PROVIDER, 5000, 10,locationListener);
 
         } else {
             alertbox("Gps Status!!", "Your GPS is: OFF");
@@ -174,7 +174,7 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
                     "\n\nMy Currrent City is: "+cityName;
 
 
-            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude(), null);
+            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude(), null, null, null);
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(context);
             database.add(locDB);
 

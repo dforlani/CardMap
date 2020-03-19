@@ -352,7 +352,7 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
                         .position(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)))
                         //.icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#A4C639")))
                         .icon(BitmapDescriptorFactory.fromBitmap(localizacoes.get(i).foto))
-                        .title("Mundo brasil"));
+                        .title(localizacoes.get(i).nome + " : "+localizacoes.get(i).telefone));
             }
 
 
