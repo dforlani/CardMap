@@ -433,7 +433,7 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
                     editTextTelefone.getText().toString());
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(context);
             database.add(locDB);
-            Toast.makeText(null, "Contato salvo com sucesso", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Contato salvo com sucesso", Toast.LENGTH_LONG).show();
 
 
 
