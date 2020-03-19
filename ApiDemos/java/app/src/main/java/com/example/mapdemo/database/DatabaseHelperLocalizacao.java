@@ -13,6 +13,7 @@ import android.util.Log;
 import com.example.mapdemo.model.Localizacao;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
@@ -71,9 +72,24 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getAll(){
+    public ArrayList<Localizacao> getAll(){
+        ArrayList<Localizacao> localizacoes = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor locs = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        if (locs.getCount() > 0){
+            locs.moveToFirst();
+            Localizacao aux;
+            do{
+                aux = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)),
+                        locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)),
+                        getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO)))
+                );
+                localizacoes.add(aux);
+            }while(locs.moveToNext());
+        }
+
+        return localizacoes;
+
     }
 
         public void add(Localizacao loc) {
@@ -108,19 +124,11 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         return outputStream.toByteArray();
     }
 
-    public Bitmap getImage(int i){
+    public Bitmap getImage(byte[] imagem){
+if(imagem != null) {
+    return BitmapFactory.decodeByteArray(imagem, 0, imagem.length);
+}
 
-        String qu = "select img  from table where feedid=" + i ;
-        Cursor cur = db.rawQuery(qu, null);
-
-        if (cur.moveToFirst()){
-            byte[] imgByte = cur.getBlob(0);
-            cur.close();
-            return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
-        }
-        if (cur != null && !cur.isClosed()) {
-            cur.close();
-        }
 
         return null;
     }

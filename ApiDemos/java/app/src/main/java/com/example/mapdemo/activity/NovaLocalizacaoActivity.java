@@ -174,7 +174,7 @@ public class NovaLocalizacaoActivity extends AppCompatActivity
                     "\n\nMy Currrent City is: "+cityName;
 
 
-            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude());
+            Localizacao locDB = new Localizacao(loc.getLatitude(), loc.getLongitude(), null);
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(context);
             database.add(locDB);
 

@@ -350,7 +350,8 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
 
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)))
-                        .icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#A4C639")))
+                        //.icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#A4C639")))
+                        .icon(BitmapDescriptorFactory.fromBitmap(localizacoes.get(i).foto))
                         .title("Mundo brasil"));
             }
 
@@ -377,15 +378,8 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
     public List<Localizacao> getLocalizacoes(){
         ArrayList<Localizacao> localizacoes = new ArrayList<>();
         DatabaseHelperLocalizacao db  = new DatabaseHelperLocalizacao(this);
-        Cursor locs = db.getAll();
-        if (locs.getCount() > 0){
-            locs.moveToFirst();
-            Localizacao aux;
-            do{
-                aux = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)), locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)));
-                localizacoes.add(aux);
-            }while(locs.moveToNext());
-        }
+        localizacoes = db.getAll();
+
         return localizacoes;
 
     }
