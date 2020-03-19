@@ -6,20 +6,25 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.mapdemo.model.Localizacao;
+
+import java.io.ByteArrayOutputStream;
 
 public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
 // If you change the database schema, you must increment the database version.
-     static final int DATABASE_VERSION = 2;
+     static final int DATABASE_VERSION = 3;
      static final String DATABASE_NAME =  "localizacao.db";
     String TABLE_NAME = "localizacao";
     String COLUMN_ID = "id_localizacao";
     public static String COLUMN_LATITUDE = "latitude";
     public static String COLUMN_LONGITUDE = "longitude";
+    public static String COLUMN_FOTO= "foto";
 
 
      public DatabaseHelperLocalizacao(Context context) {
@@ -42,7 +47,8 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
             TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_LATITUDE + " TEXT," +
-            COLUMN_LONGITUDE + " TEXT"
+            COLUMN_LONGITUDE + " TEXT,"+
+        COLUMN_FOTO + " BLOB"
             + ")";
 
 
@@ -84,6 +90,7 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_LATITUDE, loc.latitude);
                 values.put(COLUMN_LONGITUDE, loc.longitude);
+                values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
 
                 // Notice how we haven't specified the primary key. SQLite auto increments the primary key column.
                 db.insertOrThrow(TABLE_NAME, null, values);
@@ -94,5 +101,28 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
                 db.endTransaction();
             }
         }
+
+    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public Bitmap getImage(int i){
+
+        String qu = "select img  from table where feedid=" + i ;
+        Cursor cur = db.rawQuery(qu, null);
+
+        if (cur.moveToFirst()){
+            byte[] imgByte = cur.getBlob(0);
+            cur.close();
+            return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+        }
+        if (cur != null && !cur.isClosed()) {
+            cur.close();
+        }
+
+        return null;
+    }
 }
 

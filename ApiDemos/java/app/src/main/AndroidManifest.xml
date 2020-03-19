@@ -63,6 +63,9 @@
             android:name=".CameraActivity"
             android:label="@string/basic_map_demo_label"/>
         <activity
+            android:name=".activity.CameraLocalizacaoActivity"
+            android:label="@string/nova_localizacao_com_foto_label"/>
+        <activity
             android:name=".GetCurrentLocation"
             android:label="@string/getCurrentLocation"/>
         <activity
