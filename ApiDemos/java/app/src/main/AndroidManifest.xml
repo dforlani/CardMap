@@ -27,6 +27,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <!-- EXTERNAL_STORAGE permissions are optional for Android 6.0 onwards. -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
@@ -184,6 +186,9 @@
         <activity
             android:name=".VisibleRegionDemoActivity"
             android:label="@string/visible_region_demo_label"/>
+        <activity
+            android:name=".activity.DiskPhoneActivity"
+            android:label="@string/disk_phone_label"/>
 
     </application>
 

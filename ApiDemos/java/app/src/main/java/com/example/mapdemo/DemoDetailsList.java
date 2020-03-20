@@ -17,6 +17,7 @@
 package com.example.mapdemo;
 
 import com.example.mapdemo.activity.CameraLocalizacaoActivity;
+import com.example.mapdemo.activity.DiskPhoneActivity;
 import com.example.mapdemo.activity.LocalizacoesMapaActivity;
 import com.example.mapdemo.activity.NovaLocalizacaoActivity;
 
@@ -36,6 +37,10 @@ public final class DemoDetailsList {
             new DemoDetails(R.string.localizacoes_mapa,
                     R.string.localizacoes_mapa_label,
                     LocalizacoesMapaActivity.class),
+            // Ligações
+            new DemoDetails(R.string.disk_phone,
+                    R.string.disk_phone_label,
+                    DiskPhoneActivity.class),
             new DemoDetails(R.string.cameraTest,
                     R.string.camera_label,
                     CameraActivity.class),
