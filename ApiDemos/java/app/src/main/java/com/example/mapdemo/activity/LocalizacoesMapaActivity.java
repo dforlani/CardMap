@@ -16,11 +16,15 @@
 
 package com.example.mapdemo.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -30,6 +34,8 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -41,6 +47,7 @@ import android.widget.Toast;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
@@ -93,6 +100,7 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
     private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
 
     private static final LatLng ALICE_SPRINGS = new LatLng(-24.6980, 133.8807);
+    private String telefone;
 
     /** Demonstrates customizing the info window and/or its contents. */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
@@ -459,10 +467,8 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
         // Do nothing.
     }
 
-    //
-    // Marker related listeners.
-    //
 
+    // Método para clicar na imagem (ponto) do mapa
     @Override
     public boolean onMarkerClick(final Marker marker) {
         if (marker.equals(mPerth)) {
@@ -496,8 +502,9 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
         // Markers have a z-index that is settable and gettable.
         float zIndex = marker.getZIndex() + 1.0f;
         marker.setZIndex(zIndex);
-        Toast.makeText(this, marker.getTitle() + " z-index set to " + zIndex,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, marker.getTitle() + " z-index set to " + zIndex, Toast.LENGTH_SHORT).show();
+
+        onClickedImage(marker.getTitle().replaceAll("[^0-9]", "")); // chama método responsável para realizar ligação
 
         mLastSelectedMarker = marker;
         // We return false to indicate that we have not consumed the event and that we wish
@@ -534,6 +541,20 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
     @Override
     public void onMarkerDrag(Marker marker) {
         mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
+    }
+
+
+    // Método que realiza ligações quando a imagem for clicada
+    public void onClickedImage(String telefone) {
+
+            Uri uri = Uri.parse("tel: " + telefone);
+
+            Intent intent = new Intent(Intent.ACTION_CALL, uri);
+            if (ActivityCompat.checkSelfPermission(LocalizacoesMapaActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(LocalizacoesMapaActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                return;
+            }
+            startActivity(intent);
     }
 
 }
