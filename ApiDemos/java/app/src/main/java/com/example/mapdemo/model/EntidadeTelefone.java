@@ -1,18 +1,18 @@
 package com.example.mapdemo.model;
 
 public class EntidadeTelefone {
-    private String Telefone;
+    private String telefone;
     public String getTelefone() {
-        return Telefone;
+        return telefone;
 
     }
 
     public void setTelefone(String telefone) {
-        Telefone = telefone;
+        this.telefone = telefone;
     }
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return "Telefone: " + Telefone;
+        return "Telefone: " + telefone;
     }
 }

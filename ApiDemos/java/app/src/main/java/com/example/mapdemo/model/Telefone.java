@@ -14,7 +14,7 @@ import android.provider.ContactsContract;
 
 public class Telefone {
 
-    private String _IDContato;
+    public String _IDContato;
 
     private Context _ctx;
 

@@ -1,11 +1,12 @@
 package com.example.mapdemo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 public class EntidadeContatos {
     private String ID;
     private String Nome;
     private String Email;
-    private List<EntidadeTelefone> Telefones;
+    private List<EntidadeTelefone> telefones = new ArrayList<>();
     public String getID() {
         return ID;
     }
@@ -19,10 +20,10 @@ public class EntidadeContatos {
         Nome = nome;
     }
     public List<EntidadeTelefone> getTelefones() {
-        return Telefones;
+        return telefones;
     }
     public void setTelefones(List<EntidadeTelefone> telefones) {
-        Telefones = telefones;
+        this.telefones = telefones;
     }
     public String getEmail() {
         return Email;
@@ -35,6 +36,7 @@ public class EntidadeContatos {
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return Nome + "-"  + Telefones.get(0);
+        String aux_tel = (telefones.size() > 0? telefones.get(0).toString():"");
+        return Nome + "-" + ID+ "-" + aux_tel;
     }
 }
