@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <!-- EXTERNAL_STORAGE permissions are optional for Android 6.0 onwards. -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -69,6 +70,10 @@
         <activity
             android:name=".activity.CameraLocalizacaoActivity"
             android:label="@string/nova_localizacao_com_foto_label"/>
+        <activity
+            android:name=".activity.ContatosActivity"
+            android:label="@string/lista_contatos_label"/>
+
         <activity
             android:name=".GetCurrentLocation"
             android:label="@string/getCurrentLocation"/>

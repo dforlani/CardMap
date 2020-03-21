@@ -28,6 +28,9 @@
     <string name="basic_map_demo_label">Basic Map</string>
     <string name="nova_localizacao">Nova Localização pra Pós</string>
     <string name="nova_localizacao_com_foto">Nova Localização com foto pra Pós</string>
+    <string name="lista_contatos">Contatos</string>
+    <string name="lista_contatos_label">Lista Contatos</string>
+
     <string name="nova_localizacao_com_foto_label">Nova Localização com foto pra Pós</string>
 
     <string name="disk_phone">Ligações</string>
