@@ -74,7 +74,9 @@
         <activity
             android:name=".activity.ContatosActivity"
             android:label="@string/lista_contatos_label"/>
-
+        <activity
+            android:name=".activity.AutoCompleteContatosActivity"
+            android:label="@string/lista_auto_complete_contatos_label"/>
         <activity
             android:name=".GetCurrentLocation"
             android:label="@string/getCurrentLocation"/>

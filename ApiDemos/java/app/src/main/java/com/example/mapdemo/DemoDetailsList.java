@@ -16,11 +16,12 @@
 
 package com.example.mapdemo;
 
+import com.example.mapdemo.activity.AutoCompleteContatosActivity;
+import com.example.mapdemo.activity.AutoCompleteContatosAdapter;
 import com.example.mapdemo.activity.CameraLocalizacaoActivity;
 import com.example.mapdemo.activity.ContatosActivity;
 import com.example.mapdemo.activity.DiskPhoneActivity;
 import com.example.mapdemo.activity.LocalizacoesMapaActivity;
-import com.example.mapdemo.activity.NovaLocalizacaoActivity;
 
 /**
  * A list of all the demos we have available.
@@ -32,6 +33,9 @@ public final class DemoDetailsList {
     }
 
     public static final DemoDetails[] DEMOS = {
+            new DemoDetails(R.string.lista_auto_complete_contatos,
+                    R.string.lista_auto_complete_contatos_label,
+                    AutoCompleteContatosActivity.class),
             new DemoDetails(R.string.lista_contatos,
                     R.string.lista_contatos_label,
                     ContatosActivity.class),

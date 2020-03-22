@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.Manifest;
-import android.app.Activity;
 
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -19,8 +18,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mapdemo.R;
-import com.example.mapdemo.model.Contatos;
-import com.example.mapdemo.model.EntidadeContatos;
+import com.example.mapdemo.model.ContactsResolver;
+import com.example.mapdemo.model.EntidadeContato;
 
 public class ContatosActivity extends AppCompatActivity {
 
@@ -38,19 +37,19 @@ public class ContatosActivity extends AppCompatActivity {
 
         final ListView listaPessoas = (ListView)findViewById(R.id.ListView01);
 
-        List<EntidadeContatos> listaContatos = new ArrayList<EntidadeContatos>();
+        List<EntidadeContato> listaContatos = new ArrayList<EntidadeContato>();
 
-        Contatos Contato = new Contatos(this);
+        ContactsResolver Contato = new ContactsResolver(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }
 
-        listaContatos = Contato.getContatos();
+        listaContatos = Contato.getContatos("");
         // adapter que sera o source para a listview
 
-        ArrayAdapter<EntidadeContatos> adapter = new ArrayAdapter<EntidadeContatos>(this,android.R.layout.simple_list_item_1, listaContatos);
+        ArrayAdapter<EntidadeContato> adapter = new ArrayAdapter<EntidadeContato>(this,android.R.layout.simple_list_item_1, listaContatos);
 
         //seta o adapter para o listview
 

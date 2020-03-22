@@ -2,7 +2,7 @@ package com.example.mapdemo.model;
 
 import java.util.ArrayList;
 import java.util.List;
-public class EntidadeContatos {
+public class EntidadeContato {
     private String ID;
     private String Nome;
     private String Email;
