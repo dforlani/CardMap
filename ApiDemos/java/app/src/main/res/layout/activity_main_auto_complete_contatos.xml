@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:completionThreshold="1"
-        android:hint="Select a country" />
+        android:hint="Select a country" >
+    </AutoCompleteTextView>
 
 </LinearLayout>

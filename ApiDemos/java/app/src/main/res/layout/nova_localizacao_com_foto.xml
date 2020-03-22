@@ -20,46 +20,13 @@
             android:layout_height="wrap_content"
             android:text="@string/photo">
         </Button>
-        <LinearLayout
-            android:orientation="horizontal"
+        <AutoCompleteTextView
+            android:id="@+id/combo_contatos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start">
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nome: " />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTextNome"
-            >
-        </EditText>
-    </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start">
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Telefone: " />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextTelefone"
-                >
-            </EditText>
-        </LinearLayout>
-
-
-
-
+            android:completionThreshold="1"
+            android:hint="Selecione um Contato" >
+        </AutoCompleteTextView>
     </LinearLayout>
 
     <LinearLayout

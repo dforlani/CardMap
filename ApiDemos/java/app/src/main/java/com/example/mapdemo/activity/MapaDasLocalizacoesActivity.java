@@ -19,7 +19,6 @@ package com.example.mapdemo.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,8 +33,6 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -78,7 +75,7 @@ import java.util.Random;
 /**
  * This shows how to place markers on a map.
  */
-public class LocalizacoesMapaActivity extends AppCompatActivity implements
+public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
         OnMarkerClickListener,
         OnInfoWindowClickListener,
         OnMarkerDragListener,
@@ -550,8 +547,8 @@ public class LocalizacoesMapaActivity extends AppCompatActivity implements
             Uri uri = Uri.parse("tel: " + telefone);
 
             Intent intent = new Intent(Intent.ACTION_CALL, uri);
-            if (ActivityCompat.checkSelfPermission(LocalizacoesMapaActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(LocalizacoesMapaActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
+            if (ActivityCompat.checkSelfPermission(MapaDasLocalizacoesActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MapaDasLocalizacoesActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
                 return;
             }
             startActivity(intent);

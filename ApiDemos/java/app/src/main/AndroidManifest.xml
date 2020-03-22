@@ -69,7 +69,7 @@
             android:name=".CameraActivity"
             android:label="@string/basic_map_demo_label"/>
         <activity
-            android:name=".activity.CameraLocalizacaoActivity"
+            android:name=".activity.NovaLocalizacaoComFotoActivity"
             android:label="@string/nova_localizacao_com_foto_label"/>
         <activity
             android:name=".activity.ContatosActivity"
@@ -93,10 +93,7 @@
             android:name=".CircleDemoActivity"
             android:label="@string/circle_demo_label"/>
         <activity
-            android:name=".activity.NovaLocalizacaoActivity"
-            android:label="@string/nova_localizacao_label"/>
-        <activity
-            android:name=".activity.LocalizacoesMapaActivity"
+            android:name=".activity.MapaDasLocalizacoesActivity"
             android:label="@string/localizacoes_mapa_label"/>
         <activity
             android:name=".EventsDemoActivity"

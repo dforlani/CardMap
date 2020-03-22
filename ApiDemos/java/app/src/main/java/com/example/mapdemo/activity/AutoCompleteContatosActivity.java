@@ -27,13 +27,4 @@ public class AutoCompleteContatosActivity extends AppCompatActivity {
         AutoCompleteContatosAdapter adapter = new AutoCompleteContatosAdapter(this, contatos);
         editText.setAdapter(adapter);
     }
-
-//    private void fillCountryList() {
-//        countryList = new ArrayList<>();
-//        countryList.add(new CountryItem("Afghanistan", R.drawable.flag_afghanistan));
-//        countryList.add(new CountryItem("Albania", R.drawable.flag_albania));
-//        countryList.add(new CountryItem("Algeria", R.drawable.flag_algeria));
-//        countryList.add(new CountryItem("Andorra", R.drawable.flag_andorra));
-//        countryList.add(new CountryItem("Angola", R.drawable.flag_angola));
-//    }
 }

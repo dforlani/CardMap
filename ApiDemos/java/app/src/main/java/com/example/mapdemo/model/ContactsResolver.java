@@ -31,32 +31,32 @@ public class ContactsResolver {
 //                ContactsContract.Contacts.LAST_TIME_CONTACTED,
 //                ContactsContract.Contacts.DISPLAY_NAME
 //        );
-        Cursor C_Contatos
+        Cursor cursorContatos
                 =this.ctx.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
                 projection, selection, selectionArgs, ContactsContract.Contacts.DISPLAY_NAME);
         //pega os index das colunnas
-        int IndexID = C_Contatos.getColumnIndex(ContactsContract.Contacts._ID);
+        int IndexID = cursorContatos.getColumnIndex(ContactsContract.Contacts._ID);
         int IndexTemTelefone =
-                C_Contatos.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
+                cursorContatos.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
 
         int IndexName =
-                C_Contatos.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                cursorContatos.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
 
-        List<EntidadeContato> Contatos = new ArrayList<EntidadeContato>();
-        EntidadeContato Contato;
-        while(C_Contatos.moveToNext())
+        List<EntidadeContato> contatos = new ArrayList<EntidadeContato>();
+        EntidadeContato contato;
+        while(cursorContatos.moveToNext())
         {
-            Contato = new EntidadeContato();
-            Contato.setID(C_Contatos.getString(IndexID));            Contato.setNome(C_Contatos.getString(IndexName));
+            contato = new EntidadeContato();
+            contato.setID(cursorContatos.getString(IndexID));            contato.setNome(cursorContatos.getString(IndexName));
             //verifica se o contato tem telefone
-            if(Integer.parseInt(C_Contatos.getString(IndexTemTelefone))>0)
+            if(Integer.parseInt(cursorContatos.getString(IndexTemTelefone))>0)
             {
-                Telefone _Telefone = new Telefone(Contato.getID(), this.ctx);
-                Contato.setTelefones(_Telefone.getTelefones());
+                Telefone _Telefone = new Telefone(contato.getID(), this.ctx);
+                contato.setTelefones(_Telefone.getTelefones());
             }
-            Contatos.add(Contato);
+            contatos.add(contato);
         }
-        C_Contatos.close();
-        return Contatos;
+        cursorContatos.close();
+        return contatos;
     }
 }

@@ -10,17 +10,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,15 +30,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mapdemo.R;
 import com.example.mapdemo.database.DatabaseHelperLocalizacao;
+import com.example.mapdemo.model.ContactsResolver;
+import com.example.mapdemo.model.EntidadeContato;
 import com.example.mapdemo.model.Localizacao;
+
+import java.util.ArrayList;
+import java.util.List;
 //import com.example.mapdemo.database.DatabaseHelperExemploKotlin;
 //import com.example.mapdemo.model.Localizacao;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
-public class CameraLocalizacaoActivity extends AppCompatActivity
+public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
         implements OnClickListener, LocationListener {
 
     private LocationManager locationMangaer=null;
@@ -48,7 +48,6 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
     private LocationManager mLocationManager;
 
     private Button btnGetLocation = null;
-   // private EditText editLocation = null;
     private ProgressBar pb =null;
 
     private static final String TAG = "Debug";
@@ -60,16 +59,6 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
      * location
      */
     private Location mLocation;
-
-    /**
-     * latitude
-     */
-    private double mLatitude;
-
-    /**
-     * longitude
-     */
-    private double mLongitude;
 
     /**
      * min distance change to get location update
@@ -89,6 +78,11 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
     private EditText editTextNome = null;
     private EditText editTextTelefone = null;
     private Context mContext;
+    private AutoCompleteTextView comboContatos = null;
+
+    //lista de contatos para combo dos contatos
+    private List<EntidadeContato> contatos = new ArrayList<>();
+    private EntidadeContato contatoSelecionado = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,11 +98,11 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
 
-//        editLocation = (EditText) findViewById(R.id.editTextLocation);
 
         btnGetLocation = (Button) findViewById(R.id.btnLocation);
-        editTextNome = (EditText) findViewById(R.id.editTextNome);
-        editTextTelefone = (EditText) findViewById(R.id.editTextTelefone);
+        //editTextNome = (EditText) findViewById(R.id.editTextNome);
+        //editTextTelefone = (EditText) findViewById(R.id.editTextTelefone);
+
         btnGetLocation.setOnClickListener(this);
 
 
@@ -137,6 +131,23 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
             }
         });
 
+        //inicia a combo dos contatos
+        ContactsResolver ctc = new ContactsResolver(this);
+        contatos = ctc.getContatos("");
+        AutoCompleteTextView comboContatos = findViewById(R.id.combo_contatos);
+
+        //evento para setar contatoSecionaddo quando for clicado na combo
+        comboContatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int pos,
+                                    long id) {
+                contatoSelecionado = contatos.get(pos);
+            }
+        });
+
+        AutoCompleteContatosAdapter adapter = new AutoCompleteContatosAdapter(this, contatos);
+        comboContatos.setAdapter(adapter);
+
     }
 
     public void onProviderDisabled(String provider) {
@@ -154,11 +165,6 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
 
     }
 
-//    @Override
-//    public IBinder onBind(Intent arg0) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 
     public void onLocationChanged(Location location) {
         // TODO Auto-generated method stub
@@ -169,149 +175,92 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
         flag = displayGpsStatus();
         if (flag) {
 
-            Log.v(TAG, "onClick");
-
-//            editLocation.setText("Please!! move your device to"+
-          //          " see the changes in coordinates."+"\nWait..");
-
-            pb.setVisibility(View.VISIBLE);
-            //locationListener = new MyLocationListener(this);
-
-           // locationMangaer.requestLocationUpdates(LocationManager
-             //       .GPS_PROVIDER, 5000, 10,locationListener);
+         //   pb.setVisibility(View.VISIBLE);
             pb.setVisibility(View.INVISIBLE);
-           // Toast.makeText(getBaseContext(),"Location changed : Lat: " +
-             //               loc.getLatitude()+ " Lng: " + loc.getLongitude(),
-             //       Toast.LENGTH_SHORT).show();
+            //gera a localização atual
+            geraLocalizacao();
 
-
-            /**
-             * Set GPS Location fetched address
-             */
-            getLocation();
-
-
-            //Location loc = getLocation();
-            String longitude = "Longitude: " +this.getLongitude();
-            Log.v(TAG, longitude);
-            String latitude = "Latitude: " +this.getLatitude();
-            Log.v(TAG, latitude);
-
-            /*----------to get City-Name from coordinates ------------- */
-
-
-
-            Localizacao locDB = new Localizacao(this.getLatitude(),
+            //cria um objeto de localização
+            Localizacao nova_localizacao = new Localizacao(this.getLatitude(),
                     this.getLongitude(),
                     photo,
                     editTextNome.getText().toString(),
                     editTextTelefone.getText().toString());
+
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
-            database.add(locDB);
-             Toast.makeText(getBaseContext(),"Contato salvo com sucesso",
-                   Toast.LENGTH_SHORT).show();
+            database.add(nova_localizacao);
+
+             Toast.makeText(getBaseContext(),"Contato salvo com sucesso", Toast.LENGTH_SHORT).show();
              finish();
 
         } else {
-            alertbox("Gps Status!!", "Your GPS is: OFF");
+            Toast.makeText(getBaseContext(),"Seu GPS está desligado e não foi possível salvar", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
     }
 
-    /**
-     * @return latitude
-     *         <p/>
-     *         function to get latitude
-     */
+   /****************   FUNÇÕES DO GPS  *************************/
+
     public double getLatitude() {
 
         if (mLocation != null) {
 
-            mLatitude = mLocation.getLatitude();
+            return mLocation.getLatitude();
         }
-        return mLatitude;
+        return 0;
     }
 
-    /**
-     * @return longitude
-     *         function to get longitude
-     */
     public double getLongitude() {
 
         if (mLocation != null) {
 
-            mLongitude = mLocation.getLongitude();
+            return mLocation.getLongitude();
 
         }
 
-        return mLongitude;
+        return 0;
     }
 
-    /**
-     * @return location
-     */
-    public Location getLocation() {
-
+    public Location geraLocalizacao() {
         try {
 
             mLocationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
-            /*getting status of the gps*/
+            //obtem o status do GPS
             isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-            /*getting status of network provider*/
+            //obtem o status do provedor de localização pela rede
             isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!isGpsEnabled && !isNetworkEnabled) {
+                //não vai ser possível obter nenhuma localização
 
-                /*no location provider enabled*/
             } else {
-
                 this.canGetLocation = true;
 
-                /*getting location from network provider*/
-                if (isNetworkEnabled) {
-
-                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
+                //obtem coordenadas pelo GPS
+                if (isGpsEnabled) {
+                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
 
                     if (mLocationManager != null) {
+                        mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                        mLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    } else
+                        //obtem coordenadas pelo provedor de rede
+                        if (isNetworkEnabled) {
 
-                        if (mLocation != null) {
-
-                            mLatitude = mLocation.getLatitude();
-
-                            mLongitude = mLocation.getLongitude();
-                        }
-                    }
-                    /*if gps is enabled then get location using gps*/
-                    if (isGpsEnabled) {
-
-                        if (mLocation == null) {
-
-                            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
+                            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
 
                             if (mLocationManager != null) {
-
-                                mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                                if (mLocation != null) {
-
-                                    mLatitude = mLocation.getLatitude();
-
-                                    mLongitude = mLocation.getLongitude();
-                                }
-
+                                mLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                             }
                         }
 
-                    }
                 }
             }
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
@@ -319,11 +268,13 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
     }
 
     public boolean canGetLocation() {
-
         return this.canGetLocation;
     }
 
-    /*----Method to Check GPS is enable or disable ----- */
+    /**
+     * Verifica se o GPS está ligado
+     * @return
+     */
     private Boolean displayGpsStatus() {
         ContentResolver contentResolver = getBaseContext()
                 .getContentResolver();
@@ -337,58 +288,10 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
             return false;
         }
     }
-
-    /*----------Method to create an AlertBox ------------- */
-    protected void alertbox(String title, String mymessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your Device's GPS is Disable")
-                .setCancelable(false)
-                .setTitle("** Gps Status **")
-                .setPositiveButton("Gps On",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // finish the current activity
-                                // AlertBoxAdvance.this.finish();
-                                Intent myIntent = new Intent(
-                                        Settings.ACTION_SECURITY_SETTINGS);
-                                startActivity(myIntent);
-                                dialog.cancel();
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // cancel the dialog box
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private Location getLastBestLocation() {
-        Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location locationNet = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        long GPSLocationTime = 0;
-        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
-
-        long NetLocationTime = 0;
-
-        if (null != locationNet) {
-            NetLocationTime = locationNet.getTime();
-        }
-
-        if ( 0 < GPSLocationTime - NetLocationTime ) {
-            return locationGPS;
-        }
-        else {
-            return locationNet;
-        }
-    }
+    /************** FIM DAS FUNÇÕES DO GPS          ***************************/
 
 
-    //FUNÇÕES DA CÂMERA
+    /***************************   FUNÇÕES DA CÂMERA **************************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
@@ -417,4 +320,5 @@ public class CameraLocalizacaoActivity extends AppCompatActivity
             imageView.setImageBitmap(photo);
         }
     }
+    /**************** FIM DAS FUNÇÕES DA CÂMERA           ********************/
 }
