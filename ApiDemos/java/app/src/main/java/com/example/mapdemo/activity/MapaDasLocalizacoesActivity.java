@@ -134,31 +134,8 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
         }
 
         private void render(Marker marker, View view) {
-            int badge;
-            // Use the equals() method on a Marker to check for equals.  Do not use ==.
-            if (marker.equals(mBrisbane)) {
-                badge = R.drawable.badge_qld;
-            } else if (marker.equals(mAdelaide)) {
-                badge = R.drawable.badge_sa;
-            } else if (marker.equals(mSydney)) {
-                badge = R.drawable.badge_nsw;
-            } else if (marker.equals(mMelbourne)) {
-                badge = R.drawable.badge_victoria;
-            } else if (marker.equals(mPerth)) {
-                badge = R.drawable.badge_wa;
-            } else if (marker.equals(mDarwin1)) {
-                badge = R.drawable.badge_nt;
-            } else if (marker.equals(mDarwin2)) {
-                badge = R.drawable.badge_nt;
-            } else if (marker.equals(mDarwin3)) {
-                badge = R.drawable.badge_nt;
-            } else if (marker.equals(mDarwin4)) {
-                badge = R.drawable.badge_nt;
-            } else {
-                // Passing 0 to setImageResource will clear the image view.
-                badge = 0;
-            }
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+
+            ((ImageView) view.findViewById(R.id.badge)).setImageResource(0);
 
             String title = marker.getTitle();
             TextView titleUi = ((TextView) view.findViewById(R.id.title));
@@ -185,21 +162,6 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
     }
 
     private GoogleMap mMap;
-
-    private Marker mPerth;
-
-    private Marker mSydney;
-
-    private Marker mBrisbane;
-
-    private Marker mAdelaide;
-
-    private Marker mMelbourne;
-
-    private Marker mDarwin1;
-    private Marker mDarwin2;
-    private Marker mDarwin3;
-    private Marker mDarwin4;
 
 
     /**
@@ -286,66 +248,6 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
     }
 
     private void addMarkersToMap() {
-        // Uses a colored icon.
-        /*mBrisbane = mMap.addMarker(new MarkerOptions()
-                .position(BRISBANE)
-                .title("Brisbane")
-                .snippet("Population: 2,074,200")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-        // Uses a custom icon with the info window popping out of the center of the icon.
-        mSydney = mMap.addMarker(new MarkerOptions()
-                .position(SYDNEY)
-                .title("Sydney")
-                .snippet("Population: 4,627,300")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
-                .infoWindowAnchor(0.5f, 0.5f));
-
-        // Creates a draggable marker. Long press to drag.
-        mMelbourne = mMap.addMarker(new MarkerOptions()
-                .position(MELBOURNE)
-                .title("Melbourne")
-                .snippet("Population: 4,137,400")
-                .draggable(true));
-
-        // Place four markers on top of each other with differing z-indexes.
-        mDarwin1 = mMap.addMarker(new MarkerOptions()
-                .position(DARWIN)
-                .title("Darwin Marker 1")
-                .snippet("z-index 1")
-                .zIndex(1));
-        mDarwin2 = mMap.addMarker(new MarkerOptions()
-                .position(DARWIN)
-                .title("Darwin Marker 2")
-                .snippet("z-index 2")
-                .zIndex(2));
-        mDarwin3 = mMap.addMarker(new MarkerOptions()
-                .position(DARWIN)
-                .title("Darwin Marker 3")
-                .snippet("z-index 3")
-                .zIndex(3));
-        mDarwin4 = mMap.addMarker(new MarkerOptions()
-                .position(DARWIN)
-                .title("Darwin Marker 4")
-                .snippet("z-index 4")
-                .zIndex(4));
-
-
-        // A few more markers for good measure.
-        mPerth = mMap.addMarker(new MarkerOptions()
-                .position(PERTH)
-                .title("Perth")
-                .snippet("Population: 1,738,800"));
-        mAdelaide = mMap.addMarker(new MarkerOptions()
-                .position(ADELAIDE)
-                .title("Adelaide")
-                .snippet("Population: 1,213,000"));
-
-        // Vector drawable resource as a marker icon.
-        mMap.addMarker(new MarkerOptions()
-                .position(ALICE_SPRINGS)
-                .icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#A4C639")))
-                .title("Alice Springs"));*/
 
         //alterações para adicionar marcadores do banco
         List<Localizacao> localizacoes = this.getLocalizacoes();
@@ -355,29 +257,10 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
 
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)))
-                        //.icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#A4C639")))
                         .icon(BitmapDescriptorFactory.fromBitmap(localizacoes.get(i).foto))
-                        .title(localizacoes.get(i).nome + " : "+localizacoes.get(i).telefone));
+                        .title(localizacoes.get(i).toString()));
             }
 
-
-        // Creates a marker rainbow demonstrating how to create default marker icons of different
-        // hues (colors).
-        /*float rotation = mRotationBar.getProgress();
-        boolean flat = mFlatBox.isChecked();
-
-        int numMarkersInRainbow = 12;
-        for (int i = 0; i < numMarkersInRainbow; i++) {
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(
-                            -30 + 10 * Math.sin(i * Math.PI / (numMarkersInRainbow - 1)),
-                            135 - 10 * Math.cos(i * Math.PI / (numMarkersInRainbow - 1))))
-                    .title("Marker " + i)
-                    .icon(BitmapDescriptorFactory.defaultMarker(i * 360 / numMarkersInRainbow))
-                    .flat(flat)
-                    .rotation(rotation));
-            mMarkerRainbow.add(marker);
-        }*/
     }
 
     public List<Localizacao> getLocalizacoes(){
@@ -468,33 +351,6 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
     // Método para clicar na imagem (ponto) do mapa
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        if (marker.equals(mPerth)) {
-            // This causes the marker at Perth to bounce into position when it is clicked.
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-            final long duration = 1500;
-
-            final Interpolator interpolator = new BounceInterpolator();
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = Math.max(
-                            1 - interpolator.getInterpolation((float) elapsed / duration), 0);
-                    marker.setAnchor(0.5f, 1.0f + 2 * t);
-
-                    if (t > 0.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    }
-                }
-            });
-        } else if (marker.equals(mAdelaide)) {
-            // This causes the marker at Adelaide to change color and alpha.
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(mRandom.nextFloat() * 360));
-            marker.setAlpha(mRandom.nextFloat());
-        }
 
         // Markers have a z-index that is settable and gettable.
         float zIndex = marker.getZIndex() + 1.0f;

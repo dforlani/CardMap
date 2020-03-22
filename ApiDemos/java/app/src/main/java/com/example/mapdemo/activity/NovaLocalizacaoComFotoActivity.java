@@ -184,8 +184,8 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
             Localizacao nova_localizacao = new Localizacao(this.getLatitude(),
                     this.getLongitude(),
                     photo,
-                    editTextNome.getText().toString(),
-                    editTextTelefone.getText().toString());
+                    new Integer(contatoSelecionado.getID())
+                    );
 
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
             database.add(nova_localizacao);

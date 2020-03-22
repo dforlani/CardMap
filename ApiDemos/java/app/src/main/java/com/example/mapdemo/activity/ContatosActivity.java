@@ -39,14 +39,14 @@ public class ContatosActivity extends AppCompatActivity {
 
         List<EntidadeContato> listaContatos = new ArrayList<EntidadeContato>();
 
-        ContactsResolver Contato = new ContactsResolver(this);
+        ContactsResolver contatoResolver = new ContactsResolver(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }
 
-        listaContatos = Contato.getContatos("");
+        listaContatos = contatoResolver.getContatos("");
         // adapter que sera o source para a listview
 
         ArrayAdapter<EntidadeContato> adapter = new ArrayAdapter<EntidadeContato>(this,android.R.layout.simple_list_item_1, listaContatos);

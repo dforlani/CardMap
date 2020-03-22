@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.example.mapdemo.model.ContactsResolver;
+import com.example.mapdemo.model.EntidadeContato;
 import com.example.mapdemo.model.Localizacao;
 
 import java.io.ByteArrayOutputStream;
@@ -19,19 +21,21 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
 // If you change the database schema, you must increment the database version.
-     static final int DATABASE_VERSION = 5;
+     static final int DATABASE_VERSION = 6;
      static final String DATABASE_NAME =  "localizacao.db";
     String TABLE_NAME = "localizacao";
     String COLUMN_ID = "id_localizacao";
     public static String COLUMN_LATITUDE = "latitude";
     public static String COLUMN_LONGITUDE = "longitude";
     public static String COLUMN_FOTO= "foto";
-    public static String COLUMN_NOME= "nome";
-    public static String COLUMN_TELEFONE= "telefone";
+    public static String COLUMN_ID_CONTATO= "id_contato";
+    private Context context;
 
 
      public DatabaseHelperLocalizacao(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        this.context = context;
     }
 
     // Called when the database connection is being configured.
@@ -52,8 +56,7 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
             COLUMN_LATITUDE + " TEXT," +
             COLUMN_LONGITUDE + " TEXT,"+
         COLUMN_FOTO + " BLOB,"+
-        COLUMN_NOME + " TEXT,"+
-                COLUMN_TELEFONE + " TEXT"
+            COLUMN_ID_CONTATO + " INTEGER"
             + ")";
 
 
@@ -87,9 +90,16 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
                 aux = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)),
                         locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)),
                         getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO))),
-                        locs.getString(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_NOME)),
-                        locs.getString(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_TELEFONE))
+                        locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID_CONTATO))
+
                 );
+                //busca o nome e telefone que estão na lista de contatos do telefone
+                ContactsResolver ctr = new ContactsResolver(context);
+                EntidadeContato auxContato = ctr.getContatoByID(aux.idContato);
+                aux.telefones = auxContato.getTelefones();
+                aux.nome = auxContato.getNome();
+
+
                 localizacoes.add(aux);
             }while(locs.moveToNext());
         }
@@ -99,28 +109,21 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
     }
 
         public void add(Localizacao loc) {
-            // Create and/or open the database for writing
+         //Abre o banco pra escrita
             SQLiteDatabase db = getWritableDatabase();
 
-            // It's a good idea to wrap our insert in a transaction. This helps with performance and ensures
-            // consistency of the database.
             db.beginTransaction();
             try {
-                // The user might already exist in the database (i.e. the same user created multiple posts).
-
-
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_LATITUDE, loc.latitude);
                 values.put(COLUMN_LONGITUDE, loc.longitude);
                 values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
-                values.put(COLUMN_NOME, loc.nome);
-                values.put(COLUMN_TELEFONE, loc.telefone);
+                values.put(COLUMN_ID_CONTATO,  loc.idContato);
 
-                // Notice how we haven't specified the primary key. SQLite auto increments the primary key column.
                 db.insertOrThrow(TABLE_NAME, null, values);
                 db.setTransactionSuccessful();
             } catch (Exception e) {
-                Log.d("DATABASE", "Error while trying to add post to database");
+                Log.d("DATABASE", "Erro ao tentar salvar no banco!!!!!!!!!!!");
             } finally {
                 db.endTransaction();
             }

@@ -16,7 +16,6 @@
 
 package com.example.mapdemo;
 
-import com.example.mapdemo.activity.AutoCompleteContatosActivity;
 import com.example.mapdemo.activity.NovaLocalizacaoComFotoActivity;
 import com.example.mapdemo.activity.ContatosActivity;
 import com.example.mapdemo.activity.DiskPhoneActivity;
@@ -32,12 +31,6 @@ public final class DemoDetailsList {
     }
 
     public static final DemoDetails[] DEMOS = {
-            new DemoDetails(R.string.lista_auto_complete_contatos,
-                    R.string.lista_auto_complete_contatos_label,
-                    AutoCompleteContatosActivity.class),
-            new DemoDetails(R.string.lista_contatos,
-                    R.string.lista_contatos_label,
-                    ContatosActivity.class),
             new DemoDetails(R.string.nova_localizacao_com_foto,
                     R.string.nova_localizacao_com_foto_label,
                     NovaLocalizacaoComFotoActivity.class),
