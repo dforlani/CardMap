@@ -93,7 +93,14 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
     private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
 
     private static final LatLng ALICE_SPRINGS = new LatLng(-24.6980, 133.8807);
-    private String telefone;
+
+    private GoogleMap mMap;
+
+    private final List<Marker> mMarkerRainbow = new ArrayList<>();
+
+    private TextView mTopText;
+
+    List<Localizacao> localizacoes;
 
     /** Demonstrates customizing the info window and/or its contents. */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
@@ -111,22 +118,14 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
 
         @Override
         public View getInfoWindow(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_window) {
-                // This means that getInfoContents will be called.
-                return null;
-            }
-            render(marker, mWindow);
-            return mWindow;
+            //TODO
+            return null;
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
-                // This means that the default info contents will be used.
-                return null;
-            }
-            render(marker, mContents);
-            return mContents;
+                //TODO
+            return null;
         }
 
         private void render(Marker marker, View view) {
@@ -157,52 +156,14 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
         }
     }
 
-    private GoogleMap mMap;
 
-
-    /**
-     * Keeps track of the last selected marker (though it may no longer be selected).  This is
-     * useful for refreshing the info window.
-     */
-    private Marker mLastSelectedMarker;
-
-    private final List<Marker> mMarkerRainbow = new ArrayList<Marker>();
-
-    private TextView mTopText;
-
-    private SeekBar mRotationBar;
-
-    private CheckBox mFlatBox;
-
-    private RadioGroup mOptions;
-
-    private final Random mRandom = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_das_localizacoejs);
 
-        mTopText = (TextView) findViewById(R.id.top_text);
-
-        mRotationBar = (SeekBar) findViewById(R.id.rotationSeekBar);
-        mRotationBar.setMax(360);
-        mRotationBar.setOnSeekBarChangeListener(this);
-
-        mFlatBox = (CheckBox) findViewById(R.id.flat);
-
-        mOptions = (RadioGroup) findViewById(R.id.custom_info_window_options);
-        mOptions.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (mLastSelectedMarker != null && mLastSelectedMarker.isInfoWindowShown()) {
-                    // Refresh the info window when the info window's content has changed.
-                    mLastSelectedMarker.showInfoWindow();
-                }
-            }
-        });
-
-        SupportMapFragment mapFragment =
+         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         new OnMapAndViewReadyListener(mapFragment, this);
     }
@@ -232,21 +193,20 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
         // Ideally this string would be localised.
         mMap.setContentDescription("Map with lots of markers.");
 
-        LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(PERTH)
-                .include(SYDNEY)
-                .include(ADELAIDE)
-                .include(BRISBANE)
-                .include(MELBOURNE)
-                .include(DARWIN)
-                .build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+
+        LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
+
+        for (int i = 0; i < localizacoes.size(); i++) {
+            builderBounds.include(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)));
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builderBounds.build(), 50));
     }
 
     private void addMarkersToMap() {
 
         //alterações para adicionar marcadores do banco
-        List<Localizacao> localizacoes = this.getLocalizacoes();
+        localizacoes  = this.getLocalizacoes();
 
             for (int i = 0; i < localizacoes.size(); i++) {
 
@@ -316,10 +276,7 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
         if (!checkReady()) {
             return;
         }
-        boolean flat = mFlatBox.isChecked();
-        for (Marker marker : mMarkerRainbow) {
-            marker.setFlat(flat);
-        }
+
     }
 
     @Override
@@ -355,7 +312,7 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
 
         onClickedImage(marker.getTitle().replaceAll("[^0-9]", "")); // chama método responsável para realizar ligação
 
-        mLastSelectedMarker = marker;
+
         // We return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
@@ -404,6 +361,14 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
                 return;
             }
             startActivity(intent);
+    }
+
+    /** Called when the Clear button is clicked. */
+    public void onAdicionar(View view) {
+        if (!checkReady()) {
+            return;
+        }
+        mMap.clear();
     }
 
 }
