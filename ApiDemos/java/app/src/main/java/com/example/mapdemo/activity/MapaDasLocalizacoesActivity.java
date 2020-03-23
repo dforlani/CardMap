@@ -181,7 +181,7 @@ public class MapaDasLocalizacoesActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.marker_demo);
+        setContentView(R.layout.activity_mapa_das_localizacoejs);
 
         mTopText = (TextView) findViewById(R.id.top_text);
 

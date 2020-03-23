@@ -69,9 +69,6 @@
             android:name=".activity.NovaLocalizacaoComFotoActivity"
             android:label="@string/nova_localizacao_com_foto_label"/>
         <activity
-            android:name=".activity.ContatosActivity"
-            android:label="@string/lista_contatos_label"/>
-        <activity
             android:name=".activity.MapaDasLocalizacoesActivity"
             android:label="@string/localizacoes_mapa_label"/>
         <activity
