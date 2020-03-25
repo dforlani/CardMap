@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="demo_title">Google Maps API Demos</string>
+    <string name="demo_title">CardMap</string>
     <string name="no_demos">No demos</string>
     <string name="play_services_not_installed">Google Play services is not installed on this device.</string>
 
@@ -39,6 +39,7 @@
 
     <string name="disk_phone">Ligações</string>
     <string name="disk_phone_label">Realiza chamadas telefônicas pra Pós</string>
+    <string name="listar_localizoes_label">Localizações</string>
 
 
     <string name="localizacoes_mapa">Localizações no Mapa pra Pós</string>

@@ -9,6 +9,7 @@ public class Localizacao {
     public Double longitude;
     public Bitmap foto;
     public Integer idContato;
+    public Integer idLocalizacao;
 
     /**
      * Vai ser obtido na lista de contatos pela idContato
@@ -22,11 +23,12 @@ public class Localizacao {
     List<EntidadeTelefone> telefones;
 
 
-    public Localizacao(Double latitude, Double longitude, Bitmap foto, Integer  idContato){
+    public Localizacao(Double latitude, Double longitude, Bitmap foto, Integer  idContato, Integer idLocalizacao){
         this.latitude = latitude;
         this.longitude = longitude;
         this.foto = foto;
         this.idContato = idContato;
+        this.idLocalizacao = idLocalizacao;
     }
 
     public String getNome(){
@@ -44,6 +46,18 @@ public class Localizacao {
         }
 
         return this.telefones;
+    }
+
+    public String getTelefonesString(){
+        String texto = "";
+        if(this.telefones == null){
+            for (EntidadeTelefone telefone: telefones
+                 ) {
+                texto += telefone.getTelefone();
+            }
+
+        }
+         return texto;
     }
 
 

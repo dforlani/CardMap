@@ -19,34 +19,22 @@ package com.example.mapdemo;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
-import com.example.mapdemo.OnMapAndViewReadyListener;
-import com.example.mapdemo.R;
+import com.example.mapdemo.activity.ListarLocalizacoesActivity;
 import com.example.mapdemo.activity.NovaLocalizacaoComFotoActivity;
 import com.example.mapdemo.database.DatabaseHelperLocalizacao;
 import com.example.mapdemo.model.Localizacao;
@@ -59,7 +47,6 @@ import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -68,7 +55,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * This shows how to place markers on a map.
@@ -82,27 +68,14 @@ public class MainActivity extends AppCompatActivity implements
         OnInfoWindowCloseListener,
         OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener {
 
-    private static final LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
-
-    private static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-
-    private static final LatLng DARWIN = new LatLng(-12.4634, 130.8456);
-
-    private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
-
-    private static final LatLng ADELAIDE = new LatLng(-34.92873, 138.59995);
-
-    private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
-
-    private static final LatLng ALICE_SPRINGS = new LatLng(-24.6980, 133.8807);
 
     private GoogleMap mMap;
 
     private final List<Marker> mMarkerRainbow = new ArrayList<>();
 
-    private TextView mTopText;
 
     List<Localizacao> localizacoes;
+    private TextView mTopText;
 
     /** Demonstrates customizing the info window and/or its contents. */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
@@ -163,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapa_das_localizacoejs);
+        setContentView(R.layout.activity_main);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -348,6 +321,13 @@ public class MainActivity extends AppCompatActivity implements
      * */
     public void onAdicionar(View view) {
         startActivity(new Intent(this, NovaLocalizacaoComFotoActivity.class));;
+    }
+
+    /**
+     * Chamado ao clicar no botão de adicionar localização
+     * */
+    public void onListar(View view) {
+        startActivity(new Intent(this, ListarLocalizacoesActivity.class));;
     }
 
 }

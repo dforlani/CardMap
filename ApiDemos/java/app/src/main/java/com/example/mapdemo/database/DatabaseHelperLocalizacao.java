@@ -20,19 +20,19 @@ import java.util.ArrayList;
 public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
-// If you change the database schema, you must increment the database version.
-     static final int DATABASE_VERSION = 7;
-     static final String DATABASE_NAME =  "localizacao.db";
-    String TABLE_NAME = "localizacao";
-    String COLUMN_ID = "id_localizacao";
+    // If you change the database schema, you must increment the database version.
+    static final int DATABASE_VERSION = 8;
+    static final String DATABASE_NAME = "localizacao.db";
+    public static String TABLE_NAME = "localizacao";
+    public static String COLUMN_ID = "id_localizacao";
     public static String COLUMN_LATITUDE = "latitude";
     public static String COLUMN_LONGITUDE = "longitude";
-    public static String COLUMN_FOTO= "foto";
-    public static String COLUMN_ID_CONTATO= "id_contato";
+    public static String COLUMN_FOTO = "foto";
+    public static String COLUMN_ID_CONTATO = "id_contato";
     private Context context;
 
 
-     public DatabaseHelperLocalizacao(Context context) {
+    public DatabaseHelperLocalizacao(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
         this.context = context;
@@ -50,21 +50,19 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
     // If a database already exists on disk with the same DATABASE_NAME, this method will NOT be called.
     @Override
     public void onCreate(SQLiteDatabase db) {
-    String CREATE_TABLE = "CREATE TABLE " +
-            TABLE_NAME + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_LATITUDE + " TEXT," +
-            COLUMN_LONGITUDE + " TEXT,"+
-        COLUMN_FOTO + " BLOB,"+
-            COLUMN_ID_CONTATO + " INTEGER"
-            + ")";
+        String CREATE_TABLE = "CREATE TABLE " +
+                TABLE_NAME + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_LATITUDE + " TEXT," +
+                COLUMN_LONGITUDE + " TEXT," +
+                COLUMN_FOTO + " BLOB," +
+                COLUMN_ID_CONTATO + " INTEGER"
+                + ")";
 
 
+        db.execSQL(CREATE_TABLE);
 
-    db.execSQL(CREATE_TABLE);
-
-}
-
+    }
 
 
     // Called when the database needs to be upgraded.
@@ -79,18 +77,20 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<Localizacao> getAll(){
+    public ArrayList<Localizacao> getAll() {
         ArrayList<Localizacao> localizacoes = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        Cursor locs = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
-        if (locs.getCount() > 0){
+        Cursor locs = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        if (locs.getCount() > 0) {
             locs.moveToFirst();
             Localizacao aux;
-            do{
+            do {
                 aux = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)),
                         locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)),
                         getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO))),
-                        locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID_CONTATO))
+                        locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID_CONTATO)),
+                        locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID)
+                        )
 
                 );
                 //busca o nome e telefone que estão na lista de contatos do telefone
@@ -101,33 +101,50 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
                 localizacoes.add(aux);
-            }while(locs.moveToNext());
+            } while (locs.moveToNext());
         }
 
         return localizacoes;
 
     }
 
-        public void add(Localizacao loc) {
-         //Abre o banco pra escrita
-            SQLiteDatabase db = getWritableDatabase();
+    public void add(Localizacao loc) {
+        //Abre o banco pra escrita
+        SQLiteDatabase db = getWritableDatabase();
 
-            db.beginTransaction();
-            try {
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_LATITUDE, loc.latitude);
-                values.put(COLUMN_LONGITUDE, loc.longitude);
-                values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
-                values.put(COLUMN_ID_CONTATO,  loc.idContato);
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_LATITUDE, loc.latitude);
+            values.put(COLUMN_LONGITUDE, loc.longitude);
+            values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
+            values.put(COLUMN_ID_CONTATO, loc.idContato);
 
-                db.insertOrThrow(TABLE_NAME, null, values);
-                db.setTransactionSuccessful();
-            } catch (Exception e) {
-                Log.d("DATABASE", "Erro ao tentar salvar no banco!!!!!!!!!!!");
-            } finally {
-                db.endTransaction();
-            }
+            db.insertOrThrow(TABLE_NAME, null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d("DATABASE", "Erro ao tentar salvar no banco!!!!!!!!!!!");
+        } finally {
+            db.endTransaction();
         }
+    }
+
+    public void remover(Localizacao loc) {
+        //Abre o banco pra escrita
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+
+            ContentValues args = new ContentValues();
+            db.delete(TABLE_NAME,COLUMN_ID+"=?",new String[]{loc.idLocalizacao.toString()});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d("DATABASE", "Erro ao tentar remover do banco!!!!!!!!!!!");
+        } finally {
+            db.endTransaction();
+        }
+    }
 
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -135,12 +152,10 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         return outputStream.toByteArray();
     }
 
-    public Bitmap getImage(byte[] imagem){
-if(imagem != null) {
-    return BitmapFactory.decodeByteArray(imagem, 0, imagem.length);
-}
-
-
+    public Bitmap getImage(byte[] imagem) {
+        if (imagem != null) {
+            return BitmapFactory.decodeByteArray(imagem, 0, imagem.length);
+        }
         return null;
     }
 }

@@ -46,8 +46,13 @@
                     android:layout_weight="0.5"
                     android:onClick="onAdicionar"
                     android:text="Adicionar" />
-
-
+                <Button
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:onClick="onListar"
+                    android:text="Listar" />
             </LinearLayout>
 
         </LinearLayout>
