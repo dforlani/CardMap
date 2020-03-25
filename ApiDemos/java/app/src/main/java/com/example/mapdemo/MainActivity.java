@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -85,10 +86,20 @@ public class MainActivity extends AppCompatActivity implements
         private final View mWindow;
 
         private final View mContents;
+        private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+        private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 110;
+
 
         CustomInfoWindowAdapter() {
             mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
             mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+
+            //obtem permissão pra acessar os contatos
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+
+
         }
 
         @Override
@@ -141,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         new OnMapAndViewReadyListener(mapFragment, this);
+
+
     }
 
     @Override

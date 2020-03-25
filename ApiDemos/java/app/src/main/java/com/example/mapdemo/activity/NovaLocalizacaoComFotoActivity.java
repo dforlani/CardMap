@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -90,6 +91,10 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
         setContentView(R.layout.nova_localizacao_com_foto);
         this.mContext = this;
 
+        //obtem permissão pra acessar a localização do GPS
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+        }
 
         //if you want to lock screen for always Portrait mode
         setRequestedOrientation(ActivityInfo
