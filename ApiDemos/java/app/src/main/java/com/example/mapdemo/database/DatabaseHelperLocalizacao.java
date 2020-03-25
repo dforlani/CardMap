@@ -21,7 +21,7 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
 
 // If you change the database schema, you must increment the database version.
-     static final int DATABASE_VERSION = 6;
+     static final int DATABASE_VERSION = 7;
      static final String DATABASE_NAME =  "localizacao.db";
     String TABLE_NAME = "localizacao";
     String COLUMN_ID = "id_localizacao";

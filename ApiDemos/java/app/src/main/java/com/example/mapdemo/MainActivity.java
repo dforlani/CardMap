@@ -197,12 +197,21 @@ public class MainActivity extends AppCompatActivity implements
 
 
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
+        if(localizacoes.size() > 0) {
+            //centraliza nos pontos
 
-        for (int i = 0; i < localizacoes.size(); i++) {
-            builderBounds.include(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)));
+
+            for (int i = 0; i < localizacoes.size(); i++) {
+                builderBounds.include(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)));
+            }
+
+
+        }else{
+            //senão, centraliza no brasil
+            builderBounds.include(new LatLng(-35.71, -74.01));
+            builderBounds.include(new LatLng( 2.04, -35.28));
         }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builderBounds.build(), 50));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builderBounds.build(), 200));
     }
 
     private void addMarkersToMap() {
