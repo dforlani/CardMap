@@ -1,12 +1,16 @@
 package com.example.mapdemo.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import com.example.mapdemo.MainActivity;
 import com.example.mapdemo.R;
 import com.example.mapdemo.database.DatabaseHelperLocalizacao;
 import com.example.mapdemo.model.Localizacao;
@@ -17,6 +21,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 public class AdapterItemLocalizacao extends BaseAdapter {
 
@@ -63,6 +69,9 @@ public class AdapterItemLocalizacao extends BaseAdapter {
         Button bttEditar = view.findViewById((R.id.bttEditar));
         bttEditar.setOnClickListener(new ClickListenerEditar(act.getBaseContext(), localizacao));
 
+        Button bttDiscar = view.findViewById((R.id.bttDiscar));
+        bttDiscar.setOnClickListener(new ClickListenerDiscar(act.getBaseContext(), localizacao));
+
         //populando as Views
         nome.setText(localizacao.getNome());
         telefone.setText(localizacao.getTelefonesString());
@@ -107,6 +116,27 @@ public class AdapterItemLocalizacao extends BaseAdapter {
         public void onClick(View v) {
             Intent intent = new Intent(act.getBaseContext(), NovaLocalizacaoComFotoActivity.class);
             intent.putExtra("ID_LOCALIZACAO", localizacao.idLocalizacao.toString());
+            act.startActivity(intent);
+        }
+    }
+
+    public class ClickListenerDiscar extends View implements View.OnClickListener {
+        Localizacao localizacao;
+
+        public ClickListenerDiscar(Context context, Localizacao localizacao) {
+            super(context);
+            this.localizacao = localizacao;
+            this.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Uri uri = Uri.parse("tel: " + localizacao.getFirstPhone());
+            Intent intent = new Intent(Intent.ACTION_CALL, uri);
+            if (ActivityCompat.checkSelfPermission(act, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                return;
+            }
             act.startActivity(intent);
         }
     }
