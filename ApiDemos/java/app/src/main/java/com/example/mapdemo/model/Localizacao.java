@@ -65,6 +65,13 @@ public class Localizacao {
          return texto;
     }
 
+    public String getFirstPhone(){
+        String telefone = "";
+        if(this.getTelefones() != null && this.getTelefones().size() > 0){
+            telefone = this.getTelefones().get(0).getTelefone();
+        }
+        return  telefone;
+    }
 
     public String toString(){
         String telefone = "";

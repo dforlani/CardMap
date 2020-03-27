@@ -82,26 +82,15 @@ public class MainActivity extends AppCompatActivity implements
      * Demonstrates customizing the info window and/or its contents.
      */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
-
-        // These are both viewgroups containing an ImageView with id "badge" and two TextViews with id
-        // "title" and "snippet".
-        private final View mWindow;
-
-        private final View mContents;
         private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-        private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 110;
+
 
 
         CustomInfoWindowAdapter() {
-            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-
             //obtem permissão pra acessar os contatos
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             }
-
-
         }
 
         @Override
@@ -116,32 +105,7 @@ public class MainActivity extends AppCompatActivity implements
             return null;
         }
 
-        private void render(Marker marker, View view) {
 
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(0);
-
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
-            if (title != null) {
-                // Spannable string allows us to edit the formatting of the text.
-                SpannableString titleText = new SpannableString(title);
-                titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
-                titleUi.setText(titleText);
-            } else {
-                titleUi.setText("");
-            }
-
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
-                SpannableString snippetText = new SpannableString(snippet);
-                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
-                snippetUi.setText(snippetText);
-            } else {
-                snippetUi.setText("");
-            }
-        }
     }
 
 
@@ -211,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(new Double(localizacoes.get(i).latitude), new Double(localizacoes.get(i).longitude)))
                     .icon(BitmapDescriptorFactory.fromBitmap(localizacoes.get(i).foto))
-                    .title(localizacoes.get(i).toString()));
+                    .snippet(localizacoes.get(i).getFirstPhone())
+                .title("Ligar para: "+localizacoes.get(i).nome ));
         }
 
     }
@@ -225,23 +190,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private boolean checkReady() {
-        if (mMap == null) {
-            Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (!checkReady()) {
-            return;
-        }
-        float rotation = seekBar.getProgress();
-        for (Marker marker : mMarkerRainbow) {
-            marker.setRotation(rotation);
-        }
+        // Do nothing.
+
     }
 
     @Override
@@ -258,34 +212,27 @@ public class MainActivity extends AppCompatActivity implements
     // Método para clicar na imagem (ponto) do mapa
     @Override
     public boolean onMarkerClick(final Marker marker) {
-
-        // Markers have a z-index that is settable and gettable.
+        //traz a marker pra frente na tela
         float zIndex = marker.getZIndex() + 1.0f;
         marker.setZIndex(zIndex);
-        Toast.makeText(this, marker.getTitle() + " z-index set to " + zIndex, Toast.LENGTH_SHORT).show();
-
-        onClickedImage(marker.getTitle().replaceAll("[^0-9]", "")); // chama método responsável para realizar ligação
-
-
-        // We return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Click Info Window", Toast.LENGTH_SHORT).show();
+
+        onClickedImage(marker.getSnippet());
+
     }
 
     @Override
     public void onInfoWindowClose(Marker marker) {
-        //Toast.makeText(this, "Close Info Window", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onInfoWindowLongClick(Marker marker) {
-        Toast.makeText(this, "Info Window long click", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -300,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
+
     }
 
 
@@ -342,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void onListar(View view) {
         startActivity(new Intent(this, ListarLocalizacoesActivity.class));
-        ;
+
     }
 
 }
