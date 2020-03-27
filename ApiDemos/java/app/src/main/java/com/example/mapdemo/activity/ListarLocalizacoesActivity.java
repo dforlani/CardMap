@@ -23,20 +23,29 @@ public class ListarLocalizacoesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar_localizacoes);
 
-        localizacoes  = this.getLocalizacoes();
 
-        ListView listaDeLocalizacoes = (ListView) findViewById(R.id.lista);
-        //ArrayAdapter<Localizacao> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, localizacoes);
-        AdapterItemLocalizacao adapter = new AdapterItemLocalizacao(localizacoes, this);
-        listaDeLocalizacoes.setAdapter(adapter);
 
     }
 
-    public List<Localizacao> getLocalizacoes(){
-        DatabaseHelperLocalizacao db  = new DatabaseHelperLocalizacao(this);
+    public List<Localizacao> getLocalizacoes() {
+        DatabaseHelperLocalizacao db = new DatabaseHelperLocalizacao(this);
         ArrayList<Localizacao> localizacoes = db.getAll();
 
         return localizacoes;
 
+    }
+
+    /**
+     * Ao retornar de uma chamada para alterar localização, vai limpar o mapa e readicionar os marcadores
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        localizacoes = this.getLocalizacoes();
+
+        ListView listaDeLocalizacoes = (ListView) findViewById(R.id.lista);
+        AdapterItemLocalizacao adapter = new AdapterItemLocalizacao(localizacoes, this);
+        listaDeLocalizacoes.setAdapter(adapter);
     }
 }

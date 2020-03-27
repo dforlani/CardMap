@@ -108,6 +108,36 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
 
     }
 
+    public Localizacao getOneByID(String id) {
+        Localizacao localizacao = null;
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor locs = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + COLUMN_ID + " = " +id, null);
+        if (locs.getCount() > 0) {
+            locs.moveToFirst();
+
+
+            localizacao = new Localizacao(locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LATITUDE)),
+                    locs.getDouble(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_LONGITUDE)),
+                    getImage(locs.getBlob(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_FOTO))),
+                    locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID_CONTATO)),
+                    locs.getInt(locs.getColumnIndex(DatabaseHelperLocalizacao.COLUMN_ID)
+                    )
+
+            );
+            //busca o nome e telefone que estão na lista de contatos do telefone
+            ContactsResolver ctr = new ContactsResolver(context);
+            EntidadeContato auxContato = ctr.getContatoByID(localizacao.idContato);
+            localizacao.telefones = auxContato.getTelefones();
+            localizacao.nome = auxContato.getNome();
+            localizacao.contato = auxContato;
+
+
+        }
+
+        return localizacao;
+
+    }
+
     public void add(Localizacao loc) {
         //Abre o banco pra escrita
         SQLiteDatabase db = getWritableDatabase();
@@ -129,6 +159,27 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         }
     }
 
+    public void update(Localizacao loc) {
+        //Abre o banco pra escrita
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_LATITUDE, loc.latitude);
+            values.put(COLUMN_LONGITUDE, loc.longitude);
+            values.put(COLUMN_FOTO, getBitmapAsByteArray(loc.foto));
+            values.put(COLUMN_ID_CONTATO, loc.idContato);
+
+            db.update(TABLE_NAME, values, "id_localizacao = "+loc.idLocalizacao, null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d("DATABASE", "Erro ao tentar salvar no banco!!!!!!!!!!!");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public void remover(Localizacao loc) {
         //Abre o banco pra escrita
         SQLiteDatabase db = getWritableDatabase();
@@ -137,7 +188,7 @@ public class DatabaseHelperLocalizacao extends SQLiteOpenHelper {
         try {
 
             ContentValues args = new ContentValues();
-            db.delete(TABLE_NAME,COLUMN_ID+"=?",new String[]{loc.idLocalizacao.toString()});
+            db.delete(TABLE_NAME, COLUMN_ID + "=?", new String[]{loc.idLocalizacao.toString()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             Log.d("DATABASE", "Erro ao tentar remover do banco!!!!!!!!!!!");

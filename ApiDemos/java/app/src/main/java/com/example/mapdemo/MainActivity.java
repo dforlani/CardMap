@@ -78,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements
     List<Localizacao> localizacoes;
     private TextView mTopText;
 
-    /** Demonstrates customizing the info window and/or its contents. */
+    /**
+     * Demonstrates customizing the info window and/or its contents.
+     */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
 
         // These are both viewgroups containing an ImageView with id "badge" and two TextViews with id
@@ -143,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
-        if(localizacoes.size() > 0) {
+        if (localizacoes.size() > 0) {
             //centraliza nos pontos
 
 
@@ -192,17 +193,17 @@ public class MainActivity extends AppCompatActivity implements
             }
 
 
-        }else{
+        } else {
             //senão, centraliza no brasil
             builderBounds.include(new LatLng(-35.71, -74.01));
-            builderBounds.include(new LatLng( 2.04, -35.28));
+            builderBounds.include(new LatLng(2.04, -35.28));
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builderBounds.build(), 200));
     }
 
     private void addMarkersToMap() {
         //alterações para adicionar marcadores do banco
-        localizacoes  = this.getLocalizacoes();
+        localizacoes = this.getLocalizacoes();
 
         for (int i = 0; i < localizacoes.size(); i++) {
 
@@ -215,9 +216,9 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    public List<Localizacao> getLocalizacoes(){
-        DatabaseHelperLocalizacao db  = new DatabaseHelperLocalizacao(this);
-        ArrayList<Localizacao>  localizacoes = db.getAll();
+    public List<Localizacao> getLocalizacoes() {
+        DatabaseHelperLocalizacao db = new DatabaseHelperLocalizacao(this);
+        ArrayList<Localizacao> localizacoes = db.getAll();
 
         return localizacoes;
 
@@ -320,27 +321,28 @@ public class MainActivity extends AppCompatActivity implements
      * Ao retornar de uma chamada para adicionar uma localização, vai limpar o mapa e readicionar os marcadores
      */
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
-        if(mMap != null) {
+        if (mMap != null) {
             mMap.clear();
             addMarkersToMap();
         }
-
     }
 
     /**
      * Chamado ao clicar no botão de adicionar localização
-     * */
+     */
     public void onAdicionar(View view) {
-        startActivity(new Intent(this, NovaLocalizacaoComFotoActivity.class));;
+        startActivity(new Intent(this, NovaLocalizacaoComFotoActivity.class));
+
     }
 
     /**
      * Chamado ao clicar no botão de adicionar localização
-     * */
+     */
     public void onListar(View view) {
-        startActivity(new Intent(this, ListarLocalizacoesActivity.class));;
+        startActivity(new Intent(this, ListarLocalizacoesActivity.class));
+        ;
     }
 
 }

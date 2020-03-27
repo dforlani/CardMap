@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.BaseAdapter;
+
 import java.util.List;
 
 import com.example.mapdemo.R;
 import com.example.mapdemo.database.DatabaseHelperLocalizacao;
 import com.example.mapdemo.model.Localizacao;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickListener {
+public class AdapterItemLocalizacao extends BaseAdapter {
 
     List<Localizacao> localizacoes;
     private final Activity act;
@@ -26,14 +28,16 @@ public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickL
         this.act = act;
     }
 
-    @Override public int getCount() {
-        if(localizacoes != null)
+    @Override
+    public int getCount() {
+        if (localizacoes != null)
             return localizacoes.size();
         else return 0;
     }
 
 
-    @Override public Object getItem(int position) {
+    @Override
+    public Object getItem(int position) {
         return localizacoes.get(position);
     }
 
@@ -52,8 +56,12 @@ public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickL
         TextView nome = (TextView) view.findViewById(R.id.lista_nome);
         TextView telefone = (TextView) view.findViewById(R.id.lista_telefone);
         ImageView imagem = (ImageView) view.findViewById(R.id.lista_imagem);
-        Button onRemover = view.findViewById((R.id.bttRemover));
-        onRemover.setOnClickListener(new ClickListenerRemover(act.getBaseContext(), localizacao));
+
+        Button bttRemover = view.findViewById((R.id.bttRemover));
+        bttRemover.setOnClickListener(new ClickListenerRemover(act.getBaseContext(), localizacao));
+
+        Button bttEditar = view.findViewById((R.id.bttEditar));
+        bttEditar.setOnClickListener(new ClickListenerEditar(act.getBaseContext(), localizacao));
 
         //populando as Views
         nome.setText(localizacao.getNome());
@@ -62,18 +70,11 @@ public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickL
         return view;
     }
 
-    /**
-     * Remover o usuário ao clicar
-     * */
-    public void onClick(View view) {
-        Toast.makeText(act.getBaseContext(), "Cliquei", Toast.LENGTH_SHORT).show();
-    }
 
-    public  class ClickListenerRemover extends View implements View.OnClickListener
-    {
+    public class ClickListenerRemover extends View implements View.OnClickListener {
         Localizacao localizacao;
-        public ClickListenerRemover(Context context, Localizacao localizacao)
-        {
+
+        public ClickListenerRemover(Context context, Localizacao localizacao) {
             super(context);
             this.localizacao = localizacao;
             this.setOnClickListener(this);
@@ -82,8 +83,7 @@ public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickL
         //protected abstract void setOnClickListerner(ChordDiagram chordDiagram);
 
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this.getContext());
             database.remover(localizacao);
 
@@ -91,6 +91,23 @@ public class AdapterItemLocalizacao extends BaseAdapter implements View.OnClickL
             act.finish();
 
 
+        }
+    }
+
+    public class ClickListenerEditar extends View implements View.OnClickListener {
+        Localizacao localizacao;
+
+        public ClickListenerEditar(Context context, Localizacao localizacao) {
+            super(context);
+            this.localizacao = localizacao;
+            this.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(act.getBaseContext(), NovaLocalizacaoComFotoActivity.class);
+            intent.putExtra("ID_LOCALIZACAO", localizacao.idLocalizacao.toString());
+            act.startActivity(intent);
         }
     }
 }

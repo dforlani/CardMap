@@ -23,6 +23,11 @@ public class Localizacao {
     List<EntidadeTelefone> telefones;
 
 
+    /**
+     * Vai ser obtido na lista de contatos pela idContato
+     */
+    public EntidadeContato contato;
+
     public Localizacao(Double latitude, Double longitude, Bitmap foto, Integer  idContato, Integer idLocalizacao){
         this.latitude = latitude;
         this.longitude = longitude;

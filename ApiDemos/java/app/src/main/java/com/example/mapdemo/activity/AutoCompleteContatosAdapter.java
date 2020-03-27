@@ -3,11 +3,11 @@ package com.example.mapdemo.activity;
 
 import android.content.Context;
 
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.ArrayAdapter;
-        import android.widget.Filter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +22,7 @@ import java.util.List;
 
 
 public class AutoCompleteContatosAdapter extends ArrayAdapter<EntidadeContato> {
-    private List<EntidadeContato> contatos ;
+    private List<EntidadeContato> contatos;
     List<EntidadeContato> originalValues; // Original Values
     private Context context;
 
@@ -52,7 +52,7 @@ public class AutoCompleteContatosAdapter extends ArrayAdapter<EntidadeContato> {
         }
 
         TextView textViewName = convertView.findViewById(R.id.text_view_name);
-       // ImageView imageViewFlag = convertView.findViewById(R.id.image_view_flag);
+        // ImageView imageViewFlag = convertView.findViewById(R.id.image_view_flag);
 
         EntidadeContato contato = getItem(position);
 
@@ -68,15 +68,15 @@ public class AutoCompleteContatosAdapter extends ArrayAdapter<EntidadeContato> {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-          // ContactsResolver contatos = new ContactsResolver(context);
-            List<EntidadeContato>  contatosFiltrado=  new ArrayList<>();
+            // ContactsResolver contatos = new ContactsResolver(context);
+            List<EntidadeContato> contatosFiltrado = new ArrayList<>();
 
 
             if (originalValues == null) {
                 originalValues = new ArrayList<EntidadeContato>(contatos); // saves the original data in mOriginalValues
             }
 
-           //só vai filtrar se tiver digitado ao menos 2 dígitos
+            //só vai filtrar se tiver digitado ao menos 2 dígitos
             if (constraint == null || constraint.length() == 0) {
 
                 // set the Original result to return
@@ -95,8 +95,8 @@ public class AutoCompleteContatosAdapter extends ArrayAdapter<EntidadeContato> {
                 results.values = contatosFiltrado;
             }
 
-           // results.values = listaContatos;
-           // results.count = listaContatos.size();
+            // results.values = listaContatos;
+            // results.count = listaContatos.size();
             return results;
         }
 

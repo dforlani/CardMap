@@ -44,12 +44,12 @@ import java.util.List;
 public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
         implements OnClickListener, LocationListener {
 
-    private LocationManager locationMangaer=null;
-    private LocationListener locationListener=null;
+    private LocationManager locationMangaer = null;
+    private LocationListener locationListener = null;
     private LocationManager mLocationManager;
 
     private Button btnGetLocation = null;
-    private ProgressBar pb =null;
+    private ProgressBar pb = null;
 
     private static final String TAG = "Debug";
     private Boolean flag = false;
@@ -85,11 +85,15 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
     private List<EntidadeContato> contatos = new ArrayList<>();
     private EntidadeContato contatoSelecionado = null;
 
+    Localizacao localizacaoEdicao = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nova_localizacao_com_foto);
         this.mContext = this;
+
+
 
         //obtem permissão pra acessar a localização do GPS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -105,31 +109,21 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
 
 
         btnGetLocation = (Button) findViewById(R.id.btnLocation);
-        //editTextNome = (EditText) findViewById(R.id.editTextNome);
-        //editTextTelefone = (EditText) findViewById(R.id.editTextTelefone);
-
         btnGetLocation.setOnClickListener(this);
-
 
         locationMangaer = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
 
-
         //constroi o layout da câmera
-        this.imageView = (ImageView)this.findViewById(R.id.imageView1);
+        this.imageView = (ImageView) this.findViewById(R.id.imageView1);
         Button photoButton = (Button) this.findViewById(R.id.button1);
-        photoButton.setOnClickListener(new View.OnClickListener()
-        {
+        photoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
+            public void onClick(View v) {
+                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                }
-                else
-                {
+                } else {
                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, CAMERA_REQUEST);
                 }
@@ -153,6 +147,26 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
         AutoCompleteContatosAdapter adapter = new AutoCompleteContatosAdapter(this, contatos);
         comboContatos.setAdapter(adapter);
 
+        //coletar informações da localização para edição vindas de outra activity
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String idlocalizacaoEdicao = extras.getString("ID_LOCALIZACAO");
+            if(idlocalizacaoEdicao != null){
+                DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this.getBaseContext());
+                localizacaoEdicao = database.getOneByID(idlocalizacaoEdicao);
+                if(localizacaoEdicao != null){
+                    imageView.setImageBitmap(localizacaoEdicao.foto);
+                    photo = localizacaoEdicao.foto;
+
+                    comboContatos.setText(localizacaoEdicao.nome, false);
+                    contatoSelecionado = localizacaoEdicao.contato;
+                }
+            }
+        }
+
+
+
+
     }
 
     public void onProviderDisabled(String provider) {
@@ -175,38 +189,65 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
         // TODO Auto-generated method stub
 
     }
+
     @Override
     public void onClick(View v) {
         flag = displayGpsStatus();
-        if (flag) {
+        if(!flag){
+            Toast.makeText(getBaseContext(), "Seu GPS está desligado e não foi possível salvar", Toast.LENGTH_SHORT).show();
+        }else
+        if (isFormularioValido()) {
 
-         //   pb.setVisibility(View.VISIBLE);
+            //   pb.setVisibility(View.VISIBLE);
             pb.setVisibility(View.INVISIBLE);
             //gera a localização atual
             geraLocalizacao();
 
-            //cria um objeto de localização
-            Localizacao nova_localizacao = new Localizacao(this.getLatitude(),
-                    this.getLongitude(),
-                    photo,
-                    new Integer(contatoSelecionado.getID()),
-                    null
-                    );
+            //nova localização
+            if(localizacaoEdicao == null) {
+                //cria um objeto de localização
+                Localizacao nova_localizacao = new Localizacao(this.getLatitude(),
+                        this.getLongitude(),
+                        photo,
+                        new Integer(contatoSelecionado.getID()),
+                        null
+                );
 
-            DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
-            database.add(nova_localizacao);
+                DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
+                database.add(nova_localizacao);
+            }else{//edição de localização
+                localizacaoEdicao.contato = contatoSelecionado;
+                localizacaoEdicao.latitude  = this.getLatitude();
+                localizacaoEdicao.longitude = this.getLongitude();
+                localizacaoEdicao.foto = photo;
+                localizacaoEdicao.idContato = new Integer(contatoSelecionado.getID());
 
-             Toast.makeText(getBaseContext(),"Contato salvo com sucesso", Toast.LENGTH_SHORT).show();
-             finish();
+                DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this);
+                database.update(localizacaoEdicao);
+            }
 
-        } else {
-            Toast.makeText(getBaseContext(),"Seu GPS está desligado e não foi possível salvar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Contato salvo com sucesso", Toast.LENGTH_SHORT).show();
             finish();
+
         }
 
     }
 
-   /****************   FUNÇÕES DO GPS  *************************/
+    public boolean isFormularioValido(){
+        boolean isValidado = true;
+        if(photo == null) {
+            Toast.makeText(getBaseContext(), "Tire uma foto para identificar a localização", Toast.LENGTH_SHORT).show();
+            isValidado =false;
+        }
+
+        if(contatoSelecionado == null) {
+            Toast.makeText(getBaseContext(), "Selecione um contato para a localização", Toast.LENGTH_SHORT).show();
+            isValidado =false;
+        }
+        return isValidado;
+    }
+
+    /****************   FUNÇÕES DO GPS  *************************/
 
     public double getLatitude() {
 
@@ -279,6 +320,7 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
 
     /**
      * Verifica se o GPS está ligado
+     *
      * @return
      */
     private Boolean displayGpsStatus() {
@@ -299,29 +341,22 @@ public class NovaLocalizacaoComFotoActivity extends AppCompatActivity
 
     /***************************   FUNÇÕES DA CÂMERA **************************/
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             photo = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(photo);
         }

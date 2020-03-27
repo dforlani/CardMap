@@ -5,16 +5,22 @@
     <ImageView android:id="@+id/lista_imagem" android:layout_width="100dp" android:layout_height="match_parent" />
 
     <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="vertical">
-        <TextView android:id="@+id/lista_nome" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Titulo" android:textSize="30dp" />
-        <TextView android:id="@+id/lista_telefone" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="descriçao" android:textSize="20dp" />
+        <TextView android:id="@+id/lista_nome" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Titulo" android:textSize="15dp" />
+        <TextView android:id="@+id/lista_telefone" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="descriçao" android:textSize="15dp" />
 
     </LinearLayout>
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="vertical">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:onClick="onRemover"
         android:id="@+id/bttRemover"
         android:text="Remover" />
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:id="@+id/bttEditar"
+        android:text="Editar" />
+    </LinearLayout>
 </LinearLayout>
