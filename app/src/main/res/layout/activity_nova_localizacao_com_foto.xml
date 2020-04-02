@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+        <ImageView android:id="@+id/imageView1"
+            android:layout_height="150sp"
+            android:layout_width="150sp">
+        </ImageView>
+        <Button android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/photo">
+        </Button>
+        <AutoCompleteTextView
+            android:id="@+id/combo_contatos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:hint="Selecione um Contato" >
+        </AutoCompleteTextView>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selecionar_localizacao"
+            android:id="@+id/btt_selecionar_localizacao">
+
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layButtonH"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:gravity="center"
+        android:layout_weight="0.15">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salvar"
+            android:enabled="false"
+            android:id="@+id/btnSalvar"></Button>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layloadingH"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.20"
+        android:layout_width="fill_parent"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:id="@+id/progressBar1"
+            android:layout_height="wrap_content">
+
+        </ProgressBar>
+    </LinearLayout>
+
+</LinearLayout>
