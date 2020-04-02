@@ -15,7 +15,7 @@ public class ContactsResolver {
     }
 
     public List<EntidadeContato> getContatos(String filter) {
-        filter = "ag";
+
         String[] projection = {
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
