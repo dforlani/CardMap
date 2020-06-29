@@ -3,17 +3,21 @@ package com.andreediogo.cardmap.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.andreediogo.cardmap.R;
@@ -26,9 +30,11 @@ public class AdapterItemLocalizacao extends BaseAdapter {
 
     List<Localizacao> localizacoes;
     private final Activity act;
+    Context context;
 
-    public AdapterItemLocalizacao(List<Localizacao> localizacoes, Activity act) {
+    public AdapterItemLocalizacao(List<Localizacao> localizacoes, Activity act, Context context) {
         this.localizacoes = localizacoes;
+        this.context = context;
         this.act = act;
     }
 
@@ -61,13 +67,13 @@ public class AdapterItemLocalizacao extends BaseAdapter {
         TextView telefone = (TextView) view.findViewById(R.id.lista_telefone);
         ImageView imagem = (ImageView) view.findViewById(R.id.lista_imagem);
 
-        Button bttRemover = view.findViewById((R.id.bttRemover));
+        ImageButton bttRemover = view.findViewById((R.id.bttRemover));
         bttRemover.setOnClickListener(new ClickListenerRemover(act.getBaseContext(), localizacao));
 
-        Button bttEditar = view.findViewById((R.id.bttEditar));
+        ImageButton bttEditar = view.findViewById((R.id.bttEditar));
         bttEditar.setOnClickListener(new ClickListenerEditar(act.getBaseContext(), localizacao));
 
-        Button bttDiscar = view.findViewById((R.id.bttDiscar));
+        ImageButton bttDiscar = view.findViewById((R.id.bttDiscar));
         bttDiscar.setOnClickListener(new ClickListenerDiscar(act.getBaseContext(), localizacao));
 
         //populando as Views
@@ -91,11 +97,29 @@ public class AdapterItemLocalizacao extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(this.getContext());
-            database.remover(localizacao);
+            //dialog de confirmação para remoção
 
-            Toast.makeText(act.getBaseContext(), "Item removido com sucesso", Toast.LENGTH_SHORT).show();
-            act.finish();
+            AlertDialog.Builder alert = new  AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog));
+            alert.setTitle("Remover esta localização");
+            alert.setMessage("Deseja realmente remover esta localização?");
+            alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseHelperLocalizacao database = new DatabaseHelperLocalizacao(act.getBaseContext());
+                    database.remover(localizacao);
+
+                    Toast.makeText(act.getBaseContext(), "Item removido com sucesso", Toast.LENGTH_SHORT).show();
+                    act.finish();
+                }
+            });
+            alert.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            alert.show();
+
 
 
         }

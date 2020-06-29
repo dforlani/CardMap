@@ -43,7 +43,7 @@ public class ListarLocalizacoesActivity extends AppCompatActivity {
         localizacoes = this.getLocalizacoes();
 
         ListView listaDeLocalizacoes = (ListView) findViewById(R.id.lista);
-        AdapterItemLocalizacao adapter = new AdapterItemLocalizacao(localizacoes, this);
+        AdapterItemLocalizacao adapter = new AdapterItemLocalizacao(localizacoes, this, ListarLocalizacoesActivity.this);
         listaDeLocalizacoes.setAdapter(adapter);
     }
 }
